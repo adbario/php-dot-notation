@@ -140,4 +140,8 @@ Clear multiple paths at once:
     $data->clear([
         'user', 'info.home'
     ]);
+    
+Clear all data:
+
+    $data->clear();
 
