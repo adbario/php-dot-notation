@@ -1,0 +1,17 @@
+{
+    "name": "adbario/php-dot-notation",
+    "description": "PHP dot notation array access",
+    "keywords": ["php", "dotnotation", "arrayaccess"],
+    "homepage": "https://github.com/adbario/php-dot-notation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AdBar"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AdBar\\": "src"
+        }
+    }
+}
