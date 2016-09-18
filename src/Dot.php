@@ -30,8 +30,8 @@ class Dot implements ArrayAccess
     /**
      * Set value or array of values to path
      *
-     * @param mixed $key   Path or array of paths and values
-     * @param mixed $value Value to set if path is not an array
+     * @param mixed      $key   Path or array of paths and values
+     * @param mixed|null $value Value to set if path is not an array
      */
     public function set($key, $value = null)
     {
@@ -65,9 +65,9 @@ class Dot implements ArrayAccess
     /**
      * Add value or array of values to path
      *
-     * @param mixed   $key   Path or array of paths and values
-     * @param mixed   $value Value to set if path is not an array
-     * @param boolean $pop   Helper to pop out last key if value is an array
+     * @param mixed      $key   Path or array of paths and values
+     * @param mixed|null $value Value to set if path is not an array
+     * @param boolean    $pop   Helper to pop out last key if value is an array
      */
     public function add($key, $value = null, $pop = false)
     {
@@ -104,9 +104,9 @@ class Dot implements ArrayAccess
     /**
      * Get value of path, default value if path doesn't exist or all data
      *
-     * @param  string $key     Path
-     * @param  mixed  $default Default value
-     * @return mixed           Value of path
+     * @param  mixed|null $key     Path
+     * @param  mixed|null $default Default value
+     * @return mixed               Value of path
      */
     public function get($key = null, $default = null)
     {
@@ -151,7 +151,7 @@ class Dot implements ArrayAccess
     /**
      * Delete path or array of paths
      *
-     * @param  mixed $key Path or array of paths to delete
+     * @param mixed $key Path or array of paths to delete
      */
     public function delete($key)
     {
@@ -182,8 +182,8 @@ class Dot implements ArrayAccess
      * Delete all data, data from path or array of paths and
      * optionally format path if it doesn't exist
      *
-     * @param  mixed   $key    Path or array of paths to clean
-     * @param  boolean $format Format option
+     * @param mixed|null $key    Path or array of paths to clean
+     * @param boolean    $format Format option
      */
     public function clear($key = null, $format = false)
     {
@@ -252,5 +252,25 @@ class Dot implements ArrayAccess
     public function offsetUnset($offset)
     {
         $this->delete($offset);
+    }
+
+    /**
+     * Magic methods
+     */
+    public function __set($key, $value = null)
+    {
+        $this->set($key, $value);
+    }
+    public function __get($key)
+    {
+        return $this->get($key);
+    }
+    public function __isset($key)
+    {
+        return $this->has($key);
+    }
+    public function __unset($key)
+    {
+        $this->delete($key);
     }
 }
