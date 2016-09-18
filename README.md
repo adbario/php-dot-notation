@@ -149,20 +149,20 @@ Clear all data:
 
 Magic methods can be used to handle single level data (without dot notation).
 
-Set value
+Set value:
 
     $data->name = 'John';
 
-Get value
+Get value:
 
     echo $data->name;
 
-Check if value exists
+Check if value exists:
 
     if (isset($data->name)) {
         // Do something...
     }
 
-Delete value
+Delete value:
 
     unset($data->name);
