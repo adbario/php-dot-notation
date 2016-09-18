@@ -147,7 +147,7 @@ Clear all data:
 
 ### Magic methods
 
-Magic methods can be used to handle single level data (without dot notation).
+Magic methods can be used to handle single level data (without dot notation). These examples are not using the same data array as examples above.
 
 Set value:
 
