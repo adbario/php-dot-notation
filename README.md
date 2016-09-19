@@ -119,7 +119,7 @@ Multiple values at once:
     // Array style
     unset($data['info.home.address']);
 
-### Multiple values at once:
+Multiple values at once:
 
     $data->delete([
         'user.lastname', 'info.home.address'
