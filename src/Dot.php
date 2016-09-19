@@ -22,7 +22,7 @@ class Dot implements ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        if ($data !== null) {
+        if (is_array($data)) {
             $this->data = $data;
         }
     }
