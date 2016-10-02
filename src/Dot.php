@@ -134,9 +134,9 @@ class Dot implements ArrayAccess
      * @param  string  $key Path
      * @return boolean
      */
-    public function has(string $key)
+    public function has($key)
     {
-        $keys = explode('.', $key);
+        $keys = explode('.', (string)$key);
         $data = &$this->data;
         foreach ($keys as $key) {
             if (!isset($data[$key])) {
