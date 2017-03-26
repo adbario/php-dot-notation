@@ -1,61 +1,72 @@
 <?php
-
-namespace AdBar;
+/**
+ * Dot - PHP dot notation array access
+ *
+ * @author  Riku Särkinen <riku@adbar.io>
+ * @link    https://github.com/adbario/php-dot-notation
+ * @license https://github.com/adbario/php-dot-notation/blob/master/LICENSE.md (MIT License)
+ */
+namespace Adbar;
 
 use ArrayAccess;
 
 /**
- * Dot Notation
+ * Dot
  *
- * This class provides dot notation access to arrays, so it's easy to handle
- * multidimensional data in a clean way.
+ * This class provides a dot notation access to the regular arrays and
+ * ArrayAccess objects for easy multidimensional handling.
  */
 class Dot implements ArrayAccess
 {
-    /** @var array Data */
-    protected $data = [];
+    /**
+     * The stored array
+     *
+     * @var array
+     */
+    protected $array;
 
     /**
-     * Constructor
+     * Create a new Dot instance
      *
-     * @param array|null $data Data
+     * @param array $array Array to store
      */
-    public function __construct(array $data = null)
+    public function __construct($array = [])
     {
-        if (is_array($data)) {
-            $this->data = $data;
-        }
+        $this->setArray($array);
     }
 
     /**
-     * Set value or array of values to path
+     * Set a value to a given path or an array of paths and values
      *
-     * @param mixed      $key   Path or array of paths and values
-     * @param mixed|null $value Value to set if path is not an array
+     * @param mixed $key   Path or an array of paths and values
+     * @param mixed $value Value to set if the path is not an array
      */
     public function set($key, $value = null)
     {
         if (is_string($key)) {
-            if (is_array($value)) {
-                // Iterate values
+            if (is_array($value) && !empty($value)) {
+                // Iterate the values
                 foreach ($value as $k => $v) {
                     $this->set("$key.$k", $v);
                 }
             } else {
-                // Iterate path
+                // Iterate a path
                 $keys = explode('.', $key);
-                $data = &$this->data;
+                $array = &$this->array;
+
                 foreach ($keys as $key) {
-                    if (!isset($data[$key]) || !is_array($data[$key])) {
-                        $data[$key] = [];
+                    if (!isset($array[$key]) || !is_array($array[$key])) {
+                        $array[$key] = [];
                     }
-                    $data = &$data[$key];
+
+                    $array = &$array[$key];
                 }
-                // Set value to path
-                $data = $value;
+
+                // Set a value
+                $array = $value;
             }
         } elseif (is_array($key)) {
-            // Iterate array of paths and values
+            // Iterate an array of paths and values
             foreach ($key as $k => $v) {
                 $this->set($k, $v);
             }
@@ -63,38 +74,42 @@ class Dot implements ArrayAccess
     }
 
     /**
-     * Add value or array of values to path
+     * Add a value or an array of values to path
      *
-     * @param mixed      $key   Path or array of paths and values
-     * @param mixed|null $value Value to set if path is not an array
-     * @param boolean    $pop   Helper to pop out last key if value is an array
+     * @param mixed $key   Path or an array of paths and values
+     * @param mixed $value Value to set if the path is not an array
+     * @param bool  $pop   Helper to pop out the last key if the value is an array
      */
     public function add($key, $value = null, $pop = false)
     {
         if (is_string($key)) {
             if (is_array($value)) {
-                // Iterate values
+                // Iterate the values
                 foreach ($value as $k => $v) {
                     $this->add("$key.$k", $v, true);
                 }
             } else {
-                // Iterate path
+                // Iterate a path
                 $keys = explode('.', $key);
-                $data = &$this->data;
+                $array = &$this->array;
+
                 if ($pop === true) {
                     array_pop($keys);
                 }
+
                 foreach ($keys as $key) {
-                    if (!isset($data[$key]) || !is_array($data[$key])) {
-                        $data[$key] = [];
+                    if (!isset($array[$key]) || !is_array($array[$key])) {
+                        $array[$key] = [];
                     }
-                    $data = &$data[$key];
+
+                    $array = &$array[$key];
                 }
-                // Add value to path
-                $data[] = $value;
+
+                // Add a value
+                $array[] = $value;
             }
         } elseif (is_array($key)) {
-            // Iterate array of paths and values
+            // Iterate an array of paths and values
             foreach ($key as $k => $v) {
                 $this->add($k, $v);
             }
@@ -102,76 +117,126 @@ class Dot implements ArrayAccess
     }
 
     /**
-     * Get value of path, default value if path doesn't exist or all data
+     * Get a value from a path or default value if the path doesn't exist
      *
-     * @param  mixed|null $key     Path
-     * @param  mixed|null $default Default value
-     * @return mixed               Value of path
+     * @param  string $key     Path
+     * @param  mixed  $default Default value
+     * @return mixed
      */
-    public function get($key = null, $default = null)
+    public function get($key, $default = null)
+    {
+        $keys = explode('.', (string)$key);
+        $array = &$this->array;
+
+        foreach ($keys as $key) {
+            if (!$this->exists($array, $key)) {
+                return $default;
+            }
+
+            $array = &$array[$key];
+        }
+
+        return $array;
+    }
+
+    /**
+     * Get a value from a path or all the stored values and remove them
+     *
+     * @param  string|null $key     Path
+     * @param  mixed       $default Default value
+     * @return mixed
+     */
+    public function pull($key = null, $default = null)
     {
         if (is_string($key)) {
-            // Iterate path
-            $keys = explode('.', $key);
-            $data = &$this->data;
-            foreach ($keys as $key) {
-                if (!isset($data[$key])) {
-                    return $default;
-                }
-                $data = &$data[$key];
-            }
-            // Get value
-            return $data;
-        } elseif (is_null($key)) {
-            // Get all data
-            return $this->data;
+            // Get a value from a path
+            $value = $this->get($key, $default);
+            $this->delete($key);
+
+            return $value;
+        }
+
+        if (is_null($key)) {
+            // Get all the stored values
+            $value = $this->all();
+            $this->clear();
+
+            return $value;
         }
     }
 
     /**
-     * Check if path exists
+     * Get all the stored values
      *
-     * @param  string  $key Path
-     * @return boolean
+     * @return array
+     */
+    public function all()
+    {
+        return $this->array;
+    }
+
+    /**
+     * Check if a path exists
+     *
+     * @param  string $key Path
+     * @return bool
      */
     public function has($key)
     {
         $keys = explode('.', (string)$key);
-        $data = &$this->data;
+        $array = &$this->array;
+
         foreach ($keys as $key) {
-            if (!isset($data[$key])) {
+            if (!$this->exists($array, $key)) {
                 return false;
             }
-            $data = &$data[$key];
+
+            $array = &$array[$key];
         }
 
         return true;
     }
 
     /**
-     * Delete path or array of paths
+     * Determine if the given key exists in the provided array
      *
-     * @param mixed $key Path or array of paths to delete
+     * @param  ArrayAccess|array $array
+     * @param  string|int        $key
+     * @return bool
+     */
+    public function exists($array, $key)
+    {
+        if ($array instanceof ArrayAccess) {
+            return isset($array[$key]);
+        }
+
+        return array_key_exists($key, $array);
+    }
+
+    /**
+     * Delete a path or an array of paths
+     *
+     * @param mixed $key Path or an array of paths to delete
      */
     public function delete($key)
     {
         if (is_string($key)) {
-            // Iterate path
+            // Iterate a path
             $keys = explode('.', $key);
-            $data = &$this->data;
+            $array = &$this->array;
             $last = array_pop($keys);
+
             foreach ($keys as $key) {
-                if (!isset($data[$key])) {
+                if (!$this->exists($array, $key)) {
                     return;
                 }
-                $data = &$data[$key];
+
+                $array = &$array[$key];
             }
-            if (isset($data[$last])) {
-                // Detele path
-                unset($data[$last]);
-            }
+
+            unset($array[$last]);
         } elseif (is_array($key)) {
-            // Iterate array of paths
+            // Iterate an array of paths
             foreach ($key as $k) {
                 $this->delete($k);
             }
@@ -179,96 +244,181 @@ class Dot implements ArrayAccess
     }
 
     /**
-     * Delete all data, data from path or array of paths and
-     * optionally format path if it doesn't exist
+     * Delete all values from a given path,
+     * from an array of paths or clear all the stored values
      *
-     * @param mixed|null $key    Path or array of paths to clean
-     * @param boolean    $format Format option
+     * @param mixed $key Path or an array of paths to clean
      */
-    public function clear($key = null, $format = false)
+    public function clear($key = null)
     {
         if (is_string($key)) {
-            // Iterate path
-            $keys = explode('.', $key);
-            $data = &$this->data;
-            foreach ($keys as $key) {
-                if (!isset($data[$key]) || !is_array($data[$key])) {
-                    if ($format === true) {
-                        $data[$key] = [];
-                    } else {
-                        return;
-                    }
-                }
-                $data = &$data[$key];
-            }
-            // Clear path
-            $data = [];
+            // Clear the path
+            $this->set($key, []);
         } elseif (is_array($key)) {
-            // Iterate array
+            // Iterate an array of paths
             foreach ($key as $k) {
-                $this->clear($k, $format);
+                $this->clear($k);
             }
         } elseif (is_null($key)) {
-            // Clear all data
-            $this->data = [];
+            // Clear all the stored arrays
+            $this->array = [];
         }
     }
 
     /**
-     * Set data
+     * Sort the values of a path or all the stored values
      *
-     * @param array $data
+     * @param  string|null $key Path to sort
+     * @return array
      */
-    public function setData(array $data)
+    public function sort($key = null)
     {
-        $this->data = $data;
+        if (is_string($key)) {
+            // Sort values of a path
+            $values = $this->get($key);
+
+            return $this->sortArray((array)$values);
+        } elseif (is_null($key)) {
+            // Sort all the stored values
+            return $this->sortArray($this->array);
+        }
     }
 
     /**
-     * Set data as a reference
+     * Recursively sort the values of a path or all the stored values
      *
-     * @param array $data
+     * @param  string|null $key   Path to sort
+     * @param  array       $array Array to sort
+     * @return array
      */
-    public function setDataAsRef(array &$data)
+    public function sortRecursive($key = null, $array = null)
     {
-        $this->data = &$data;
+        if (is_array($array)) {
+            // Loop through an array
+            foreach ($array as &$value) {
+                if (is_array($value)) {
+                    $value = $this->sortRecursive(null, $value);
+                }
+            }
+
+            return $this->sortArray($array);
+        } elseif (is_string($key)) {
+            // Sort values of a path
+            $values = $this->get($key);
+
+            return $this->sortRecursive(null, (array)$values);
+        } elseif (is_null($key)) {
+            // Sort all the stored values
+            return $this->sortRecursive(null, $this->array);
+        }
     }
 
     /**
-     * ArrayAccess abstract methods
+     * Sort the given array
+     *
+     * @param  array $array Array to sort
+     * @return array
+     */
+    public function sortArray($array)
+    {
+        $this->isAssoc($array) ? ksort($array) : sort($array);
+
+        return $array;
+    }
+
+    /**
+     * Determine whether the given value is array accessible
+     *
+     * @param  mixed $value Array to verify
+     * @return bool
+     */
+    public function accessible($value)
+    {
+        return is_array($value) || $value instanceof ArrayAccess;
+    }
+
+    /**
+     * Determine if an array is associative
+     *
+     * @param  array|null $array Array to verify
+     * @return bool
+     */
+    public function isAssoc($array = null)
+    {
+        $keys = is_array($array) ? array_keys($array) : array_keys($this->array);
+
+        return array_keys($keys) !== $keys;
+    }
+
+    /**
+     * Store an array
+     *
+     * @param array $array
+     */
+    public function setArray($array)
+    {
+        if ($this->accessible($array)) {
+            $this->array = $array;
+        }
+    }
+
+    /**
+     * Store an array as a reference
+     *
+     * @param array $array
+     */
+    public function setReference(&$array)
+    {
+        if ($this->accessible($array)) {
+            $this->array = &$array;
+        }
+    }
+
+    /*
+     * --------------------------------------------------------------
+     * ArrayAccess Abstract Methods
+     * --------------------------------------------------------------
      */
     public function offsetSet($offset, $value)
     {
         $this->set($offset, $value);
     }
+
     public function offsetExists($offset)
     {
         return $this->has($offset);
     }
+
     public function offsetGet($offset)
     {
         return $this->get($offset);
     }
+
     public function offsetUnset($offset)
     {
         $this->delete($offset);
     }
 
-    /**
-     * Magic methods
+    /*
+     * --------------------------------------------------------------
+     * Magic Methods
+     * --------------------------------------------------------------
      */
     public function __set($key, $value = null)
     {
         $this->set($key, $value);
     }
+
     public function __get($key)
     {
         return $this->get($key);
     }
+
     public function __isset($key)
     {
         return $this->has($key);
     }
+
     public function __unset($key)
     {
         $this->delete($key);
