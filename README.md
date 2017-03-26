@@ -6,21 +6,29 @@ This class implements PHP's ArrayAccess class, so Dot object can also be used sa
 
 With Dot you can change this:
 
-    echo $data['info']['home']['address'];
+```php
+echo $data['info']['home']['address'];
+```
 
 to this:
 
-    echo $data->get('info.home.address');
+```php
+echo $data->get('info.home.address');
+```
 
 or even this:
 
-    echo $data['info.home.address'];
+```php
+echo $data['info.home.address'];
+```
 
 ## Installation
 
 Via composer:
 
-    composer require adbario/php-dot-notation
+```
+composer require adbario/php-dot-notation
+```
 
 Or just copy the class file Dot.php and handle namespace yourself.
 
@@ -28,122 +36,156 @@ Or just copy the class file Dot.php and handle namespace yourself.
 
 This array will be used as a reference on this guide:
 
-    $array = [
-        'user' => [
-            'firstname' => 'John',
-            'lastname'  => 'Smith'
+```php
+$array = [
+    'user' => [
+        'firstname' => 'John',
+        'lastname'  => 'Smith'
+    ],
+    'info' => [
+        'kids' => [
+            0 => 'Laura',
+            1 => 'Chris',
+            2 => 'Little Johnny'
         ],
-        'info' => [
-            'kids' => [
-                0 => 'Laura',
-                1 => 'Chris',
-                2 => 'Little Johnny'
-            ],
-            'home' => [
-                'address' => 'Rocky Road 3'
-            ]
+        'home' => [
+            'address' => 'Rocky Road 3'
         ]
-    ];
+    ]
+];
+```
 
 ### Create Dot object
 
 To start without any data, just create a new Dot object:
 
-    $data = new \AdBar\Dot;
+```php
+$data = new \AdBar\Dot;
+```
 
 If you have an array already available, inject it to Dot object:
 
-    $data = new \AdBar\Dot($array);
-    
+```php
+$data = new \AdBar\Dot($array);
+```
+
 Set data after creating Dot object:
 
-    $data->setData($array);
-    
+```php
+$data->setData($array);
+```
+
 Set data as a reference, and all changes will be made directly to original array:
 
-    $data->setDataAsRef($array);
+```php
+$data->setDataAsRef($array);
+```
 
 ### Set value
 
 Set i.e. phone number in 'home' array:
-    
-    $data->set('info.home.tel', '09-123-456-789');
-    
-    // Array style
-    $data['info.home.tel'] = '09-123-456-789';
+
+```php
+$data->set('info.home.tel', '09-123-456-789');
+
+// Array style
+$data['info.home.tel'] = '09-123-456-789';
+```
 
 Set multiple values at once:
 
-    $data->set([
-        'user.haircolor'    => 'blue',
-        'info.home.address' => 'Private Lane 1'
-    ]);
+```php
+$data->set([
+    'user.haircolor'    => 'blue',
+    'info.home.address' => 'Private Lane 1'
+]);
+```
 
 If value already exists, Dot will override it with new value.
 
 ### Get value
 
-    echo $data->get('info.home.address');
-    
-    // Default value if path doesn't exist
-    echo $data->get('info.home.country', 'some default value');
-    
-    // Array style
-    echo $data['info.home.address'];
+```php
+echo $data->get('info.home.address');
+
+// Default value if path doesn't exist
+echo $data->get('info.home.country', 'some default value');
+
+// Array style
+echo $data['info.home.address'];
+```
 
 ### Add value
 
-    $data->add('info.kids', 'Amy');
+```php
+$data->add('info.kids', 'Amy');
+```
 
 Multiple values at once:
 
-    $data->add('info.kids', [
-        'Ben', 'Claire'
-    ]);
+```php
+$data->add('info.kids', [
+    'Ben', 'Claire'
+]);
+```
 
 ### Check if value exists
 
-    if ($data->has('info.home.address')) {
-        // Do something...
-    }
-    
-    // Array style
-    if (isset($data['info.home.address'])) {
-        // Do something...
-    }
+```php
+if ($data->has('info.home.address')) {
+    // Do something...
+}
+
+// Array style
+if (isset($data['info.home.address'])) {
+    // Do something...
+}
+```
 
 ### Delete value
 
-    $data->delete('info.home.address');
-    
-    // Array style
-    unset($data['info.home.address']);
+```php
+$data->delete('info.home.address');
+
+// Array style
+unset($data['info.home.address']);
+```
 
 Multiple values at once:
 
-    $data->delete([
-        'user.lastname', 'info.home.address'
-    ]);
+```php
+$data->delete([
+    'user.lastname', 'info.home.address'
+]);
+```
 
 ### Clear values
 
 Delete all values from path:
 
-    $data->clear('info.home');
-    
+```php
+$data->clear('info.home');
+```
+
 If path doesn't exist, create an empty array on it
 
-    $data->clear('info.home.rooms', true);
+```php
+$data->clear('info.home.rooms', true);
+```
 
 Clear multiple paths at once:
 
-    $data->clear([
-        'user', 'info.home'
-    ]);
-    
+```php
+$data->clear([
+    'user', 'info.home'
+]);
+```
+
 Clear all data:
 
-    $data->clear();
+```php
+$data->clear();
+```
 
 ### Magic methods
 
@@ -151,18 +193,26 @@ Magic methods can be used to handle single level data (without dot notation). Th
 
 Set value:
 
-    $data->name = 'John';
+```php
+$data->name = 'John';
+```
 
 Get value:
 
-    echo $data->name;
+```php
+echo $data->name;
+```
 
 Check if value exists:
 
-    if (isset($data->name)) {
-        // Do something...
-    }
+```php
+if (isset($data->name)) {
+    // Do something...
+}
+```
 
 Delete value:
 
-    unset($data->name);
+```php
+unset($data->name);
+``
