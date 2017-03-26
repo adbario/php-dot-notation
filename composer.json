@@ -6,12 +6,16 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "AdBar"
+            "name": "Riku Särkinen",
+            "email": "riku@adbar.io"
         }
     ],
     "autoload": {
         "psr-4": {
-            "AdBar\\": "src"
+            "Adbar\\": "src"
         }
+    },
+    "require": {
+        "php": ">=5.4"
     }
 }
