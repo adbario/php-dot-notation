@@ -136,7 +136,7 @@ class Dot implements ArrayAccess
             $array = &$array[$key];
         }
 
-        return $array;
+        return is_array($array) ? new static($array) : $array;
     }
 
     /**
