@@ -24,14 +24,6 @@ echo $data['info.home.address'];
 
 ## Installation
 
-Via composer:
-
-```
-composer require adbario/php-dot-notation
-```
-
-Or just copy the class file Dot.php and handle namespace yourself.
-
 #### With [Composer](https://getcomposer.org/):
 
 ```
