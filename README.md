@@ -122,7 +122,7 @@ Get all the stored values:
 
 ```php
 $values = $data->all();
-``
+```
 
 Get a value from a path and remove it:
 
