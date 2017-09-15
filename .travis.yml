@@ -26,6 +26,7 @@ before_script:
 script:
   - if [[ $ANALYZE == 'true' ]]; then vendor/bin/phpunit --coverage-clover build/logs/clover.xml ; fi;
   - if [[ $ANALYZE != 'true' ]]; then vendor/bin/phpunit ; fi;
+  - if [[ $ANALYZE == 'true' ]]; then vendor/bin/phpcs ; fi
 
 after_success:
   - if [[ $ANALYZE == 'true' ]]; then php vendor/bin/coveralls -v ; fi
