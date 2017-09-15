@@ -10,12 +10,15 @@
             "email": "riku@adbar.io"
         }
     ],
+    "require": {
+        "php": ">=5.4"
+    },
     "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
         "psr-4": {
             "Adbar\\": "src"
         }
-    },
-    "require": {
-        "php": ">=5.4"
     }
 }
