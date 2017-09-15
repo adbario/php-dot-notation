@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ruleset name="Dot">
+    <description>Dot coding standard</description>
+
+    <!-- Output -->
+    <arg value="p" />
+    <arg name="colors" />
+
+    <!-- Rules -->
+    <rule ref="PSR2" />
+
+    <!-- File extensions -->
+    <arg name="extensions" value="php" />
+
+    <!-- Include paths -->
+    <file>src</file>
+    <file>tests</file>
+</ruleset>
