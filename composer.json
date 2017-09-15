@@ -1,7 +1,7 @@
 {
     "name": "adbario/php-dot-notation",
-    "description": "PHP dot notation array access",
-    "keywords": ["php", "dotnotation", "arrayaccess"],
+    "description": "PHP dot notation access to arrays",
+    "keywords": ["dotnotation", "arrayaccess"],
     "homepage": "https://github.com/adbario/php-dot-notation",
     "license": "MIT",
     "authors": [
