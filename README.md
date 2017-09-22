@@ -101,7 +101,7 @@ Multiple key / value pairs:
 ```php
 $dot->add([
     'user.name' => 'John',
-    'page.title'     => 'Home'
+    'page.title' => 'Home'
 ]);
 ```
 
