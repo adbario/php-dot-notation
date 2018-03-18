@@ -297,14 +297,14 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     public function mergeRecursiveDistinct($key, $value = null)
     {
         if (is_array($key)) {
-            $this->items = $this->array_merge_recursive_distinct($this->items, $key);
+            $this->items = $this->arrayMergeRecursiveDistinct($this->items, $key);
         } elseif (is_string($key)) {
             $items = (array) $this->get($key);
-            $value = $this->array_merge_recursive_distinct($items, $this->getArrayItems($value));
+            $value = $this->arrayMergeRecursiveDistinct($items, $this->getArrayItems($value));
 
             $this->set($key, $value);
         } elseif ($key instanceof self) {
-            $this->items = $this->array_merge_recursive_distinct($this->items, $key->all());
+            $this->items = $this->arrayMergeRecursiveDistinct($this->items, $key->all());
         }
     }
 
@@ -544,13 +544,13 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @author Stefan Melbinger <stefan (dot) melbinger (at) gmail (dot) com>
      * @see http://php.net/manual/en/function.array-merge-recursive.php
     */
-    private function array_merge_recursive_distinct(array $array1, array $array2)
+    private function arrayMergeRecursiveDistinct(array $array1, array $array2)
     {
         $merged = $array1;
     
         foreach ($array2 as $key => $value) {
             if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = $this->array_merge_recursive_distinct($merged[$key], $value);
+                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
             } else {
                 $merged[$key] = $value;
             }
