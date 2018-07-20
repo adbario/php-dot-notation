@@ -73,6 +73,7 @@ Dot has the following methods:
 - [clear()](#clear)
 - [count()](#count)
 - [delete()](#delete)
+- [flatten()](#flatten)
 - [get()](#get)
 - [has()](#has)
 - [isEmpty()](#isEmpty)
@@ -173,6 +174,14 @@ $dot->delete([
     'user.name',
     'page.title'
 ]);
+```
+
+<a name="flatten"></a>
+### flatten()
+
+Returns a flattened array with the keys delimited by a given character (default "."):
+```php
+$flatten = $dot->flatten();
 ```
 
 <a name="get"></a>
