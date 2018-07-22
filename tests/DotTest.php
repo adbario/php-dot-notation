@@ -492,6 +492,29 @@ class DotTest extends TestCase
 
     /*
      * --------------------------------------------------------------
+     * Flatten
+     * --------------------------------------------------------------
+     */
+    public function testFlatten()
+    {
+        $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
+        $flatten = $dot->flatten();
+
+        $this->assertEquals('xyz', $flatten['foo.abc']);
+        $this->assertEquals('baz', $flatten['foo.bar.0']);
+    }
+
+    public function testFlattenWithCustomCharacter()
+    {
+        $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
+        $flatten = $dot->flatten('_');
+
+        $this->assertEquals('xyz', $flatten['foo_abc']);
+        $this->assertEquals('baz', $flatten['foo_bar_0']);
+    }
+
+    /*
+     * --------------------------------------------------------------
      * To JSON
      * --------------------------------------------------------------
      */

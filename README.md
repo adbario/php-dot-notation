@@ -70,6 +70,7 @@ Dot has the following methods:
 
 - [add()](#add)
 - [all()](#all)
+- [flatten()](#flatten)
 - [clear()](#clear)
 - [count()](#count)
 - [delete()](#delete)
@@ -112,6 +113,13 @@ $dot->add([
 Returns all the stored items as an array:
 ```php
 $values = $dot->all();
+```
+
+### flatten()
+
+Returns an flatten array with the keys delimited by a givin character (by default: .)
+```php
+$flatten = $dot->flatten();
 ```
 
 <a name="clear"></a>

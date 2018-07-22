@@ -403,6 +403,33 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         return json_encode($this->items, $options);
     }
 
+    /**
+     * Return a flatten array with a given character as key delimiter.
+     *
+     * @param string $char
+     * @return array
+     */
+    public function flatten($char = '.', $items = null, $parentKeys = [])
+    {
+        $flatten = [];
+
+        if (is_null($items)) {
+            $items = $this->items;
+        }
+
+        foreach ($items as $key => $value) {
+            $currentKey = array_merge($parentKeys, [$key]);
+
+            if (is_array($value)) {
+                $flatten += $this->flatten($char, $value, $currentKey);
+            } else {
+                $flatten[implode($char, $currentKey)] = $value;
+            }
+        }
+
+        return $flatten;
+    }
+
     /*
      * --------------------------------------------------------------
      * ArrayAccess interface
