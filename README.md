@@ -82,6 +82,7 @@ Dot has the following methods:
 - [mergeRecursiveDistinct()](#mergerecursivedistinct)
 - [pull()](#pull)
 - [push()](#push)
+- [replace()](#replace)
 - [set()](#set)
 - [setArray()](#setarray)
 - [setReference()](#setreference)
@@ -352,6 +353,26 @@ $dot->push('John');
 // Equivalent vanilla PHP
 $array[] = 'John';
 ```
+
+<a name="replace"></a>
+### replace()
+
+Replaces the values with values having the same keys in the given array or Dot object:
+```php
+$dot->replace($array);
+
+// Equivalent vanilla PHP
+array_replace($originalArray, $array);
+```
+
+Replaces the values with values having the same keys in the given array or Dot object with the given key:
+```php
+$dot->merge('user', $array);
+
+// Equivalent vanilla PHP
+array_replace($originalArray['user'], $array);
+```
+`replace()` is not recursive.
 
 <a name="set"></a>
 ### set()

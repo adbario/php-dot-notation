@@ -480,6 +480,46 @@ class DotTest extends TestCase
 
     /*
      * --------------------------------------------------------------
+     * Replace
+     * --------------------------------------------------------------
+     */
+
+    public function testReplaceWithArray()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
+        $dot->replace(['foo' => ['qux' => 'quux']]);
+
+        $this->assertEquals(['qux' => 'quux'], $dot->get('foo'));
+    }
+
+    public function testReplaceKeyWithArray()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz', 'qux' => 'quux']]);
+        $dot->replace('foo', ['qux' => 'corge']);
+
+        $this->assertEquals(['bar' => 'baz', 'qux' => 'corge'], $dot->get('foo'));
+    }
+
+    public function testReplaceWithDot()
+    {
+        $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
+        $dot2 = new Dot(['foo' => ['bar' => 'qux']]);
+        $dot1->replace($dot2);
+
+        $this->assertEquals(['bar' => 'qux'], $dot1->get('foo'));
+    }
+
+    public function testReplaceKeyWithDot()
+    {
+        $dot1 = new Dot(['foo' => ['bar' => 'baz', 'qux' => 'quux']]);
+        $dot2 = new Dot(['qux' => 'corge']);
+        $dot1->merge('foo', $dot2);
+
+        $this->assertEquals(['bar' => 'baz', 'qux' => 'corge'], $dot1->get('foo'));
+    }
+
+    /*
+     * --------------------------------------------------------------
      * Set
      * --------------------------------------------------------------
      */

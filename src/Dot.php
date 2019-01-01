@@ -408,6 +408,27 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
+     * Replace all values or values within the given key
+     * with an array or Dot object
+     *
+     * @param array|string|self $key
+     * @param array|self        $value
+     */
+    public function replace($key, $value = [])
+    {
+        if (is_array($key)) {
+            $this->items = array_replace($this->items, $key);
+        } elseif (is_string($key)) {
+            $items = (array) $this->get($key);
+            $value = array_replace($items, $this->getArrayItems($value));
+
+            $this->set($key, $value);
+        } elseif ($key instanceof self) {
+            $this->items = array_replace($this->items, $key->all());
+        }
+    }
+
+    /**
      * Set a given key / value pair or pairs
      *
      * @param array|int|string $keys
