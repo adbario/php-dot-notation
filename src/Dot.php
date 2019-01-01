@@ -274,9 +274,9 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * or with the whole Dot object
      *
      * @param array|string|self $key
-     * @param array             $value
+     * @param array|self        $value
      */
-    public function merge($key, $value = null)
+    public function merge($key, $value = [])
     {
         if (is_array($key)) {
             $this->items = array_merge($this->items, $key);
@@ -294,12 +294,12 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * Recursively merge a given array or a Dot object with the given key
      * or with the whole Dot object.
      *
-     * Duplicate key are converted to arrays.
+     * Duplicate keys are converted to arrays.
      *
      * @param array|string|self $key
-     * @param array             $value
+     * @param array|self        $value
      */
-    public function mergeRecursive($key, $value = null)
+    public function mergeRecursive($key, $value = [])
     {
         if (is_array($key)) {
             $this->items = array_merge_recursive($this->items, $key);
@@ -317,14 +317,13 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * Recursively merge a given array or a Dot object with the given key
      * or with the whole Dot object.
      *
-     * Duplicate key are not converted to arrays but rather overvwrite
-     * the value in the first array with the duplicate value in the second
-     * array.
+     * Instead of converting duplicate keys to arrays, the value from
+     * given array will replace the value in Dot object.
      *
      * @param array|string|self $key
-     * @param array             $value
+     * @param array|self        $value
      */
-    public function mergeRecursiveDistinct($key, $value = null)
+    public function mergeRecursiveDistinct($key, $value = [])
     {
         if (is_array($key)) {
             $this->items = $this->arrayMergeRecursiveDistinct($this->items, $key);
@@ -336,6 +335,30 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         } elseif ($key instanceof self) {
             $this->items = $this->arrayMergeRecursiveDistinct($this->items, $key->all());
         }
+    }
+
+    /**
+     * Merges two arrays recursively. In contrast to array_merge_recursive,
+     * duplicate keys are not converted to arrays but rather overwrite the
+     * value in the first array with the duplicate value in the second array.
+     *
+     * @param  array $array1 Initial array to merge
+     * @param  array $array2 Array to recursively merge
+     * @return array
+     */
+    protected function arrayMergeRecursiveDistinct(array $array1, array $array2)
+    {
+        $merged = &$array1;
+
+        foreach ($array2 as $key => $value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 
     /**
@@ -553,39 +576,5 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     public function jsonSerialize()
     {
         return $this->items;
-    }
-
-    /**
-     * Merges two arrays recursively. In contrast to array_merge_recursive,
-     * duplicate key are not converted to arrays but rather overvwrite the
-     * value in the first array with the duplicate value in the second array.
-     *
-     * array_merge_recursive(array('key' => 'org value'), array('key' => 'new value'));
-     *     => array('key' => array('org value', 'new value'));
-     *
-     * array_merge_recursive_distinct(array('key' => 'org value'), array('key' => 'new value'));
-     *     => array('key' => array('new value'));
-     *
-     * @param array $array1
-     * @param array $array2
-     * @return array
-     * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
-     * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
-     * @author Stefan Melbinger <stefan (dot) melbinger (at) gmail (dot) com>
-     * @see http://php.net/manual/en/function.array-merge-recursive.php
-    */
-    private function arrayMergeRecursiveDistinct(array $array1, array $array2)
-    {
-        $merged = $array1;
-    
-        foreach ($array2 as $key => $value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
-            } else {
-                $merged[$key] = $value;
-            }
-        }
-
-        return $merged;
     }
 }
