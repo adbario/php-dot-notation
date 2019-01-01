@@ -78,6 +78,8 @@ Dot has the following methods:
 - [has()](#has)
 - [isEmpty()](#isEmpty)
 - [merge()](#merge)
+- [mergeRecursive()](#mergeRecursive)
+- [mergeRecursiveDistinct()](#mergeRecursiveDistinct)
 - [pull()](#pull)
 - [push()](#push)
 - [set()](#set)
@@ -269,6 +271,41 @@ $dot->merge('user', $array);
 
 // Equivalent vanilla PHP
 array_merge($originalArray['user'], $array);
+```
+
+<a name="mergeRecursive"></a>
+### mergeRecursive()
+
+Recursively merges a given array or another Dot object:
+```php
+$dot->mergeRecursive($array);
+
+// Equivalent vanilla PHP
+array_merge_recursive($originalArray, $array);
+```
+
+Recursively merges a given array or another Dot object with the given key:
+```php
+$dot->mergeRecursive('user', $array);
+
+// Equivalent vanilla PHP
+array_merge_recursive($originalArray['user'], $array);
+```
+
+<a name="mergeRecursiveDistinct"></a>
+### mergeRecursiveDistinct()
+
+Recursively merges a given array or another Dot object. Duplicate keys overwrite the value in the
+original array (unlike [mergeRecursiveDistinct()](#mergeRecursiveDistinct), where duplicate keys are transformed
+into arrays with multiple values):
+```php
+$dot->mergeRecursiveDistinct($array);
+```
+
+Recursively merges a given array or another Dot object with the given key. Duplicate keys overwrite the value in the
+original array.
+```php
+$dot->mergeRecursiveDistinct('user', $array);
 ```
 
 <a name="pull"></a>
