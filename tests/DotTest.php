@@ -341,53 +341,39 @@ class DotTest extends TestCase
     public function testRecursiveMergeArrayWithDot()
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot->mergeRecursive(['foo' => ['bar' => 'qux']]);
-        $this->assertEquals(['baz', 'qux'], $dot->get('foo.bar'));
+        $dot->mergeRecursive(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
 
-        $deep_dot = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot->mergeRecursive(['foo' => ['mel' => ['bar' => 'qux', 'moo' => 'meh']]]);
-        $this->assertEquals(['baz', 'qux'], $deep_dot->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot->get('foo.mel.moo'));
+        $this->assertEquals(['baz', 'qux'], $dot->get('foo.bar'));
+        $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveMergeArrayWithKey()
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot->mergeRecursive('foo', ['bar' => 'qux']);
-        $this->assertEquals(['baz', 'qux'], $dot->get('foo.bar'));
+        $dot->mergeRecursive('foo', ['bar' => 'qux', 'quux' => 'quuz']);
 
-        $deep_dot = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot->mergeRecursive('foo', ['mel' => ['bar' => 'qux', 'moo' => 'meh']]);
-        $this->assertEquals(['baz', 'qux'], $deep_dot->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot->get('foo.mel.moo'));
+        $this->assertEquals(['baz', 'qux'], $dot->get('foo.bar'));
+        $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveMergeDotWithDot()
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot2 = new Dot(['foo' => ['bar' => 'qux']]);
+        $dot2 = new Dot(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
         $dot1->mergeRecursive($dot2);
-        $this->assertEquals(['baz', 'qux'], $dot1->get('foo.bar'));
 
-        $deep_dot1 = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot2 = new Dot(['foo' => ['mel' => ['bar' => 'qux', 'moo' => 'meh']]]);
-        $deep_dot1->mergeRecursive($deep_dot2);
-        $this->assertEquals(['baz', 'qux'], $deep_dot1->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot1->get('foo.mel.moo'));
+        $this->assertEquals(['baz', 'qux'], $dot1->get('foo.bar'));
+        $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
     public function testRecursiveMergeDotObjectWithKey()
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot2 = new Dot(['bar' => 'qux']);
+        $dot2 = new Dot(['bar' => 'qux', 'quux' => 'quuz']);
         $dot1->mergeRecursive('foo', $dot2);
-        $this->assertEquals(['baz', 'qux'], $dot1->get('foo.bar'));
 
-        $deep_dot1 = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot2 = new Dot(['mel' => ['bar' => 'qux', 'moo' => 'meh']]);
-        $deep_dot1->mergeRecursive('foo', $deep_dot2);
-        $this->assertEquals(['baz', 'qux'], $deep_dot1->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot1->get('foo.mel.moo'));
+        $this->assertEquals(['baz', 'qux'], $dot1->get('foo.bar'));
+        $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
     /*
@@ -399,53 +385,39 @@ class DotTest extends TestCase
     public function testRecursiveDistinctMergeArrayWithDot()
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot->mergeRecursiveDistinct(['foo' => ['bar' => 'qux']]);
-        $this->assertEquals('qux', $dot->get('foo.bar'));
+        $dot->mergeRecursiveDistinct(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
 
-        $deep_dot = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot->mergeRecursiveDistinct(['foo' => ['mel' => ['bar' => 'qux', 'moo' => 'meh']]]);
-        $this->assertEquals('qux', $deep_dot->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot->get('foo.mel.moo'));
+        $this->assertEquals('qux', $dot->get('foo.bar'));
+        $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveDistinctMergeArrayWithKey()
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot->mergeRecursiveDistinct('foo', ['bar' => 'qux']);
-        $this->assertEquals('qux', $dot->get('foo.bar'));
+        $dot->mergeRecursiveDistinct('foo', ['bar' => 'qux', 'quux' => 'quuz']);
 
-        $deep_dot = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot->mergeRecursiveDistinct('foo', ['mel' => ['bar' => 'qux', 'moo' => 'meh']]);
-        $this->assertEquals('qux', $deep_dot->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot->get('foo.mel.moo'));
+        $this->assertEquals('qux', $dot->get('foo.bar'));
+        $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveDistinctMergeDotWithDot()
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot2 = new Dot(['foo' => ['bar' => 'qux']]);
+        $dot2 = new Dot(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
         $dot1->mergeRecursiveDistinct($dot2);
-        $this->assertEquals('qux', $dot1->get('foo.bar'));
 
-        $deep_dot1 = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot2 = new Dot(['foo' => ['mel' => ['bar' => 'qux', 'moo' => 'meh']]]);
-        $deep_dot1->mergeRecursiveDistinct($deep_dot2);
-        $this->assertEquals('qux', $deep_dot1->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot1->get('foo.mel.moo'));
+        $this->assertEquals('qux', $dot1->get('foo.bar'));
+        $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
     public function testRecursiveDistinctMergeDotObjectWithKey()
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
-        $dot2 = new Dot(['bar' => 'qux']);
+        $dot2 = new Dot(['bar' => 'qux', 'quux' => 'quuz']);
         $dot1->mergeRecursiveDistinct('foo', $dot2);
-        $this->assertEquals('qux', $dot1->get('foo.bar'));
 
-        $deep_dot1 = new Dot(['foo' => ['mel' => ['bar' => 'baz']]]);
-        $deep_dot2 = new Dot(['mel' => ['bar' => 'qux', 'moo' => 'meh']]);
-        $deep_dot1->mergeRecursiveDistinct('foo', $deep_dot2);
-        $this->assertEquals('qux', $deep_dot1->get('foo.mel.bar'));
-        $this->assertEquals('meh', $deep_dot1->get('foo.mel.moo'));
+        $this->assertEquals('qux', $dot1->get('foo.bar'));
+        $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
     /*
