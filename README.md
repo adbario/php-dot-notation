@@ -11,7 +11,7 @@ Dot implements PHP's ArrayAccess interface and Dot object can also be used the s
 
 ## Examples
 
-With Dot you can chage this regular array syntax:
+With Dot you can change this regular array syntax:
 
 ```php
 $array['info']['home']['address'] = 'Kings Square';
@@ -76,16 +76,16 @@ Dot has the following methods:
 - [flatten()](#flatten)
 - [get()](#get)
 - [has()](#has)
-- [isEmpty()](#isEmpty)
+- [isEmpty()](#isempty)
 - [merge()](#merge)
-- [mergeRecursive()](#mergeRecursive)
-- [mergeRecursiveDistinct()](#mergeRecursiveDistinct)
+- [mergeRecursive()](#mergerecursive)
+- [mergeRecursiveDistinct()](#mergerecursivedistinct)
 - [pull()](#pull)
 - [push()](#push)
 - [set()](#set)
-- [setArray()](#setArray)
-- [setReference()](#setReference)
-- [toJson()](#toJson)
+- [setArray()](#setarray)
+- [setReference()](#setreference)
+- [toJson()](#tojson)
 
 <a name="add"></a>
 ### add()
@@ -227,7 +227,7 @@ $dot->has([
 ]);
 ```
 
-<a name="isEmpty"></a>
+<a name="isempty"></a>
 ### isEmpty()
 
 Checks if a given key is empty (returns boolean true or false):
@@ -273,7 +273,7 @@ $dot->merge('user', $array);
 array_merge($originalArray['user'], $array);
 ```
 
-<a name="mergeRecursive"></a>
+<a name="mergerecursive"></a>
 ### mergeRecursive()
 
 Recursively merges a given array or another Dot object:
@@ -292,11 +292,11 @@ $dot->mergeRecursive('user', $array);
 array_merge_recursive($originalArray['user'], $array);
 ```
 
-<a name="mergeRecursiveDistinct"></a>
+<a name="mergerecursivedistinct"></a>
 ### mergeRecursiveDistinct()
 
 Recursively merges a given array or another Dot object. Duplicate keys overwrite the value in the
-original array (unlike [mergeRecursiveDistinct()](#mergeRecursiveDistinct), where duplicate keys are transformed
+original array (unlike [mergeRecursiveDistinct()](#mergerecursivedistinct), where duplicate keys are transformed
 into arrays with multiple values):
 ```php
 $dot->mergeRecursiveDistinct($array);
@@ -375,7 +375,7 @@ $dot->set([
 ]);
 ```
 
-<a name="setArray"></a>
+<a name="setarray"></a>
 ### setArray()
 
 Replaces all items in Dot object with a given array:
@@ -383,7 +383,7 @@ Replaces all items in Dot object with a given array:
 $dot->setArray($array);
 ```
 
-<a name="setReference"></a>
+<a name="setreference"></a>
 ### setReference()
 
 Replaces all items in Dot object with a given array as a reference and all future changes to Dot will be made directly to the original array:
@@ -391,7 +391,7 @@ Replaces all items in Dot object with a given array as a reference and all futur
 $dot->setReference($array);
 ```
 
-<a name="toJson"></a>
+<a name="tojson"></a>
 ### toJson()
 
 Returns the value of a given key as JSON:
