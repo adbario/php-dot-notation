@@ -33,10 +33,17 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * Create a new Dot instance
      *
      * @param mixed $items
+     * @param bool  $parse
      */
-    public function __construct($items = [])
+    public function __construct($items = [], $parse = false)
     {
-        $this->items = $this->getArrayItems($items);
+        $items = $this->getArrayItems($items);
+        if ($parse === true) {
+            $this->set($items);
+            return;
+        }
+
+        $this->items = $items;
     }
 
     /**
@@ -206,7 +213,9 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     {
         if (is_array($items)) {
             return $items;
-        } elseif ($items instanceof self) {
+        }
+
+        if ($items instanceof self) {
             return $items->all();
         }
 
