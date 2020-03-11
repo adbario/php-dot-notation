@@ -445,8 +445,14 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         }
 
         $items = &$this->items;
+        $append = false;
 
         foreach (explode('.', $keys) as $key) {
+            if ($key === '*') {
+                $append = true;
+                continue;
+            }
+            $append = false;
             if (!isset($items[$key]) || !is_array($items[$key])) {
                 $items[$key] = [];
             }
@@ -454,7 +460,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             $items = &$items[$key];
         }
 
-        $items = $value;
+        $append ? $items[] = $value : $items = $value;
     }
 
     /**

@@ -182,7 +182,7 @@ class DotTest extends TestCase
         $this->assertEquals('xyz', $flatten['foo.abc']);
         $this->assertEquals('baz', $flatten['foo.bar.0']);
     }
-    
+
     public function testFlattenWithCustomDelimiter()
     {
         $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
@@ -552,6 +552,29 @@ class DotTest extends TestCase
         $dot->setArray(['foo' => 'bar']);
 
         $this->assertSame(['foo' => 'bar'], $dot->all());
+    }
+
+    /*
+     * --------------------------------------------------------------
+     * Set asterisk
+     * --------------------------------------------------------------
+     */
+
+    public function testSetAsterisk()
+    {
+        $dot = new Dot;
+        $dot->set([
+            'foo' => 'bar',
+            'arr.*' => 'baz',
+        ]);
+
+        $dot->set([
+            'arr.*' => 'fizz',
+        ]);
+
+        $this->assertSame(['baz', 'fizz'], $dot->get('arr'));
+        $this->assertSame('baz', $dot->get('arr.0'));
+        $this->assertSame('fizz', $dot->get('arr.1'));
     }
 
     /*
