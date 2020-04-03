@@ -153,7 +153,7 @@ Items in the root of Dot object:
 ```php
 $dot->count();
 
-// Or use coun() function as Dot implements Countable
+// Or use count() function as Dot implements Countable
 count($dot);
 ```
 
