@@ -193,6 +193,25 @@ class DotTest extends TestCase
 
     /*
      * --------------------------------------------------------------
+     * Unflatten
+     * --------------------------------------------------------------
+     */
+    public function testUnflatten()
+    {
+        $dot = new Dot(['foo.abc' => 'xyz', 'foo.bar.0' => 'baz']);
+        $unflatten = $dot->unflatten();
+        $this->assertSame(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]], $unflatten);
+    }
+    
+    public function testUnflattenWithCustomDelimiter()
+    {
+        $dot = new Dot(['foo_abc' => 'xyz', 'foo_bar_0' => 'baz']);
+        $unflatten = $dot->unflatten('_');
+        $this->assertSame(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]], $unflatten);
+    }
+
+    /*
+     * --------------------------------------------------------------
      * Get
      * --------------------------------------------------------------
      */

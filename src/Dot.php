@@ -163,6 +163,40 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
+     * Unflatten an array with the given character as a key delimiter
+     *
+     * @param  string     $delimiter
+     * @param  array|null $items
+     * @return array
+     */
+    public function unflatten($delimiter = '.', $items = null)
+    {
+        $unflatten = [];
+
+        if (is_null($items)) {
+            $items = $this->items;
+        }
+
+        foreach ($items as $keys => $value) {
+            $segments = explode($delimiter, $keys);
+            $current = &$unflatten;
+            foreach ($segments as $key) {
+                if (!is_array($current)) {
+                    $current = array($current);
+                }
+
+                if (! array_key_exists($key, $current)) {
+                    $current[$key] = array();
+                }
+                $current = &$current[$key];
+            }
+            $current = $value;
+        }
+
+        return $unflatten;
+    }
+
+    /**
      * Return the value of a given key
      *
      * @param  int|string|null $key
