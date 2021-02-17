@@ -74,6 +74,7 @@ Dot has the following methods:
 - [count()](#count)
 - [delete()](#delete)
 - [flatten()](#flatten)
+- [unflatten()](#unflatten)
 - [get()](#get)
 - [has()](#has)
 - [isEmpty()](#isempty)
@@ -185,6 +186,20 @@ $dot->delete([
 Returns a flattened array with the keys delimited by a given character (default "."):
 ```php
 $flatten = $dot->flatten();
+```
+
+<a name="unflatten"></a>
+### unflatten()
+
+Returns a multidimensional array. Key delimiter can be specified if not using defaults (default "."):
+```php
+$flatten = $dot->flatten('_');
+$unflatten = $dot->unflatten('_', $flatten);
+
+Or
+
+$dot = new \Adbar\Dot(['foo.abc' => 'xyz', 'foo.bar.0' => 'baz']);
+$unflatten = $dot->unflatten();
 ```
 
 <a name="get"></a>
