@@ -297,7 +297,7 @@ array_merge_recursive($originalArray['user'], $array);
 ### mergeRecursiveDistinct()
 
 Recursively merges a given array or another Dot object. Duplicate keys overwrite the value in the
-original array (unlike [mergeRecursiveDistinct()](#mergerecursivedistinct), where duplicate keys are transformed
+original array (unlike [mergeRecursive()](#mergerecursive), where duplicate keys are transformed
 into arrays with multiple values):
 ```php
 $dot->mergeRecursiveDistinct($array);
