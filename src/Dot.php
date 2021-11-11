@@ -91,15 +91,19 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * Delete the given key or keys
      *
      * @param array|int|string $keys
+     * @param bool $rebase Should the non-associative array be rebased
      */
-    public function delete($keys)
+    public function delete($keys, $rebase = false)
     {
         $keys = (array) $keys;
 
         foreach ($keys as $key) {
             if ($this->exists($this->items, $key)) {
+                $shouldRebase = $rebase && !$this->isAssoc($this->items);
                 unset($this->items[$key]);
-
+                if ($shouldRebase) {
+                    $this->items = array_values($this->items);
+                }
                 continue;
             }
 
@@ -115,7 +119,11 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
                 $items = &$items[$segment];
             }
 
+            $shouldRebase = $rebase && !$this->isAssoc($items);
             unset($items[$lastSegment]);
+            if ($shouldRebase) {
+                $items = array_values($items);
+            }
         }
     }
 
@@ -495,6 +503,24 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         return json_encode($this->items, $options);
     }
 
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function isAssoc($value): bool
+    {
+        if (!is_array($value)) {
+            return false;
+        }
+        $i = 0;
+        foreach ($value as $k => $v) {
+            if ($k !== $i++) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
      * --------------------------------------------------------------
      * ArrayAccess interface
@@ -573,7 +599,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * --------------------------------------------------------------
      */
 
-     /**
+    /**
      * Get an iterator for the stored items
      *
      * @return \ArrayIterator

@@ -160,9 +160,9 @@ count($dot);
 <a name="delete"></a>
 ### delete()
 
-Deletes the given key:
+Deletes the given key. `$rebase` is optional argument. It's used to rebase non-associative arrays:
 ```php
-$dot->delete('user.name');
+$dot->delete('user.name', $rebase);
 
 // ArrayAccess
 unset($dot['user.name']);
