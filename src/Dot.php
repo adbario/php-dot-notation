@@ -508,7 +508,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  int|string $key
      * @return bool
      */
-    public function offsetExists($key):bool
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
