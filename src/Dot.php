@@ -532,12 +532,12 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * Output or return a parsable string representation of the
      * given array when exported by var_export()
      *
-     * @param  self   $items
+     * @param  array  $items
      * @return object
      */
-    public static function __set_state(self $dot): object
+    public static function __set_state(array $items): object
     {
-        return (object) $dot->all();
+        return (object) $items;
     }
 
     /*
