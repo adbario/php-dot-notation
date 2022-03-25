@@ -519,7 +519,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  int|string $key
      * @return mixed
      */
-    public function offsetGet(mixed $key): mixed
+    public function offsetGet($key)
     {
         return $this->get($key);
     }
@@ -530,7 +530,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param int|string|null $key
      * @param mixed           $value
      */
-    public function offsetSet(mixed $key, mixed $value): void
+    public function offsetSet($key, $value): void
     {
         if (is_null($key)) {
             $this->items[] = $value;
@@ -546,7 +546,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @param int|string $key
      */
-    public function offsetUnset(mixed $key): void
+    public function offsetUnset($key): void
     {
         $this->delete($key);
     }
@@ -579,7 +579,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @return \ArrayIterator
      */
-    public function getIterator(): Traversable
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);
     }
@@ -595,7 +595,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @return array
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return $this->items;
     }
