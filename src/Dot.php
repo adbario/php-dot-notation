@@ -52,7 +52,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             foreach ($keys as $key => $value) {
                 $this->add($key, $value);
             }
-        } elseif (is_null($this->get($keys))) {
+        } elseif ($this->get($keys) === null) {
             $this->set($keys, $value);
         }
     }
@@ -74,7 +74,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      */
     public function clear($keys = null)
     {
-        if (is_null($keys)) {
+        if ($keys === null) {
             $this->items = [];
 
             return;
@@ -143,22 +143,19 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     {
         $flatten = [];
 
-        if (is_null($items)) {
+        if ($items === null) {
             $items = $this->items;
         }
 
         foreach ($items as $key => $value) {
             if (is_array($value) && !empty($value)) {
-                $flatten = array_merge(
-                    $flatten,
-                    $this->flatten($delimiter, $value, $prepend.$key.$delimiter)
-                );
+                $flatten[] = $this->flatten($delimiter, $value, $prepend.$key.$delimiter);
             } else {
-                $flatten[$prepend.$key] = $value;
+                $flatten[] = [$prepend.$key => $value];
             }
         }
 
-        return $flatten;
+        return array_merge(...$flatten);
     }
 
     /**
@@ -170,7 +167,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      */
     public function get($key = null, $default = null)
     {
-        if (is_null($key)) {
+        if ($key === null) {
             return $this->items;
         }
 
@@ -253,7 +250,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      */
     public function isEmpty($keys = null)
     {
-        if (is_null($keys)) {
+        if ($keys === null) {
             return empty($this->items);
         }
 
@@ -370,7 +367,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      */
     public function pull($key = null, $default = null)
     {
-        if (is_null($key)) {
+        if ($key === null) {
             $value = $this->all();
             $this->clear();
 
@@ -392,7 +389,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      */
     public function push($key, $value = null)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             $this->items[] = $key;
 
             return;
@@ -400,7 +397,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 
         $items = $this->get($key);
 
-        if (is_array($items) || is_null($items)) {
+        if (is_array($items) || $items === null) {
             $items[] = $value;
             $this->set($key, $items);
         }
@@ -543,7 +540,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      */
     public function offsetSet($key, $value): void
     {
-        if (is_null($key)) {
+        if ($key === null) {
             $this->items[] = $value;
 
             return;
