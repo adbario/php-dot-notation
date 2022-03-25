@@ -674,7 +674,7 @@ class DotTest extends TestCase
     {
         $this->assertEquals(
             (object) ['foo' => ['bar' => 'baz']],
-            Dot::__set_state(new Dot(['foo' => ['bar' => 'baz']]))
+            Dot::__set_state(['foo' => ['bar' => 'baz']])
         );
     }
 
