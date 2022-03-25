@@ -56,6 +56,14 @@ class DotTest extends TestCase
         $this->assertEquals('bar', $dot->get('foo'));
     }
 
+    public function testConstructWithParsing()
+    {
+        $dot = new Dot(['foo.bar' => 'baz']);
+        $this->assertEquals(['foo.bar' => 'baz'], $dot->get());
+        $dot = new Dot(['foo.bar' => 'baz'], true);
+        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+    }
+
     /*
      * --------------------------------------------------------------
      * Add
