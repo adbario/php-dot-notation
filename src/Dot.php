@@ -529,6 +529,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  int|string $key
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->get($key);
