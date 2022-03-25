@@ -54,6 +54,9 @@ $dot = new \Adbar\Dot;
 
 // With existing array
 $dot = new \Adbar\Dot($array);
+
+// Or with auto parsing dot notation keys in existing array
+$dot = new \Adbar\Dot($array, true);
 ```
 
 You can also use a helper function to create the object:
@@ -62,6 +65,9 @@ $dot = dot();
 
 // With existing array
 $dot = dot($array);
+
+// Or with auto parsing dot notation keys in existing array
+$dot = dot($array, true);
 ```
 
 ## Methods

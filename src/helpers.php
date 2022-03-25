@@ -14,10 +14,11 @@ if (! function_exists('dot')) {
      * Create a new Dot object with the given items
      *
      * @param  mixed $items
+     * @param  bool  $parse
      * @return \Adbar\Dot
      */
-    function dot($items)
+    function dot($items, $parse = false)
     {
-        return new Dot($items);
+        return new Dot($items, $parse);
     }
 }
