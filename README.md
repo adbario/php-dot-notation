@@ -1,6 +1,6 @@
 # Dot - PHP dot notation access to arrays
 
-[![Build Status](https://travis-ci.org/adbario/php-dot-notation.svg?branch=2.x)](https://travis-ci.org/adbario/php-dot-notation)
+![Build Status](https://github.com/adbario/php-dot-notation/actions/workflows/ci.yaml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/adbario/php-dot-notation/badge.svg?branch=2.x)](https://coveralls.io/github/adbario/php-dot-notation?branch=2.x)
 [![Total Downloads](https://poser.pugx.org/adbario/php-dot-notation/downloads)](https://packagist.org/packages/adbario/php-dot-notation)
 [![License](https://poser.pugx.org/adbario/php-dot-notation/license)](LICENSE.md)
