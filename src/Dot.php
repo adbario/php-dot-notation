@@ -125,7 +125,6 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @param  array      $array Array to validate
      * @param  int|string $key   The key to look for
-     *
      * @return bool
      */
     protected function exists($array, $key)
@@ -494,6 +493,18 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         $options = $key === null ? 0 : $key;
 
         return json_encode($this->items, $options);
+    }
+
+    /**
+     * Output or return a parsable string representation of the
+     * given array when exported by var_export()
+     *
+     * @param  self   $items
+     * @return object
+     */
+    public static function __set_state(self $dot): object
+    {
+        return (object) $dot->all();
     }
 
     /*
