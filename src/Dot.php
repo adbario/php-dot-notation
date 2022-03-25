@@ -124,7 +124,6 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @param  array      $array Array to validate
      * @param  int|string $key   The key to look for
-     *
      * @return bool
      */
     protected function exists($array, $key)
@@ -529,6 +528,18 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         return json_encode($this->items, $options);
     }
 
+    /**
+     * Output or return a parsable string representation of the
+     * given array when exported by var_export()
+     *
+     * @param  self   $items
+     * @return object
+     */
+    public static function __set_state(self $dot): object
+    {
+        return (object) $dot->all();
+    }
+
     /*
      * --------------------------------------------------------------
      * ArrayAccess interface
@@ -541,7 +552,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  int|string $key
      * @return bool
      */
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
@@ -563,7 +574,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param int|string|null $key
      * @param mixed           $value
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         if (is_null($key)) {
             $this->items[] = $value;
@@ -579,7 +590,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @param int|string $key
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         $this->delete($key);
     }
@@ -596,7 +607,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  int|string|null $key
      * @return int
      */
-    public function count($key = null)
+    public function count($key = null): int
     {
         return count($this->get($key));
     }
@@ -607,12 +618,12 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * --------------------------------------------------------------
      */
 
-     /**
+    /**
      * Get an iterator for the stored items
      *
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);
     }
@@ -628,7 +639,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->items;
     }

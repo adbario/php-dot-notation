@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.0/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/9.5/phpunit.xsd"
+         beStrictAboutChangesToGlobalState="true"
+         beStrictAboutOutputDuringTests="true"
          bootstrap="vendor/autoload.php"
-         backupGlobals="false"
-         colors="true"
-         verbose="true"
-         stopOnFailure="false">
+         colors="true">
 
     <testsuites>
         <testsuite name="Dot Test Suite">
@@ -13,9 +12,12 @@
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory>src</directory>
+        </include>
+        <report>
+            <html outputDirectory="coverage"/>
+        </report>
+    </coverage>
 </phpunit>
