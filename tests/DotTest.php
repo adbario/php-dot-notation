@@ -182,7 +182,7 @@ class DotTest extends TestCase
         $this->assertEquals('xyz', $flatten['foo.abc']);
         $this->assertEquals('baz', $flatten['foo.bar.0']);
     }
-    
+
     public function testFlattenWithCustomDelimiter()
     {
         $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
@@ -636,10 +636,10 @@ class DotTest extends TestCase
 
     public function testToJsonAllWithOption()
     {
-        $dot = new Dot(['foo' => "'bar'"]);
+        $dot = new Dot(['foo' => 'bar']);
 
         $this->assertJsonStringEqualsJsonString(
-            json_encode(['foo' => "'bar'"], JSON_HEX_APOS),
+            json_encode(['foo' => 'bar'], JSON_HEX_APOS),
             $dot->toJson(JSON_HEX_APOS)
         );
     }
@@ -656,11 +656,43 @@ class DotTest extends TestCase
 
     public function testToJsonKeyWithOptions()
     {
-        $dot = new Dot(['foo' => ['bar' => "'value'"]]);
+        $dot = new Dot(['foo' => ['bar' => 'value']]);
 
         $this->assertEquals(
-            json_encode(['bar' => "'value'"], JSON_HEX_APOS),
+            json_encode(['bar' => 'value'], JSON_HEX_APOS),
             $dot->toJson('foo', JSON_HEX_APOS)
+        );
+    }
+
+    /*
+     * --------------------------------------------------------------
+     * Export
+     * --------------------------------------------------------------
+     */
+
+    public function testSetState()
+    {
+        $this->assertEquals(
+            (object) ['foo' => ['bar' => 'baz']],
+            Dot::__set_state(new Dot(['foo' => ['bar' => 'baz']]))
+        );
+    }
+
+    public function testVarExport()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
+
+        $this->assertEquals(
+            "Adbar\Dot::__set_state(array(\n" .
+            "   'items' => \n" .
+            "  array (\n" .
+            "    'foo' => \n" .
+            "    array (\n" .
+            "      'bar' => 'baz',\n" .
+            "    ),\n" .
+            "  ),\n" .
+            "))",
+            var_export($dot, true)
         );
     }
 
