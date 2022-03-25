@@ -13,7 +13,6 @@ use ArrayAccess;
 use ArrayIterator;
 use JsonSerializable;
 use IteratorAggregate;
-use Traversable;
 
 /**
  * Dot
