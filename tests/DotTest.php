@@ -79,7 +79,6 @@ class DotTest extends TestCase
         $dot->add('foo.bar', 'baz');
 
         $this->assertEquals('baz', $dot->get('foo.bar'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testAddValueToExistingKey()
@@ -99,6 +98,13 @@ class DotTest extends TestCase
         ]);
 
         $this->assertSame(['foobar' => 'baz', 'corge' => 'grault'], $dot->all());
+    }
+
+    public function testAddReturnsDot()
+    {
+        $dot = new Dot;
+
+        $this->assertInstanceOf(Dot::class, $dot->add('foo', 'bar'));
     }
 
     /*
@@ -126,7 +132,6 @@ class DotTest extends TestCase
         $dot->clear('foo.bar');
 
         $this->assertSame([], $dot->get('foo.bar'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testClearNonExistingKey()
@@ -153,6 +158,13 @@ class DotTest extends TestCase
         $this->assertSame([], $dot->all());
     }
 
+    public function testClearReturnsDot()
+    {
+        $dot = new Dot();
+
+        $this->assertInstanceOf(Dot::class, $dot->clear());
+    }
+
     /*
      * --------------------------------------------------------------
      * Delete
@@ -165,7 +177,6 @@ class DotTest extends TestCase
         $dot->delete('foo.bar');
 
         $this->assertFalse($dot->has('foo.bar'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testDeleteNonExistingKey()
@@ -182,6 +193,13 @@ class DotTest extends TestCase
         $dot->delete(['foo', 'baz']);
 
         $this->assertSame([], $dot->all());
+    }
+
+    public function testDeleteReturnsDot()
+    {
+        $dot = new Dot(['foo' => 'bar']);
+
+        $this->assertInstanceOf(Dot::class, $dot->clear('foo'));
     }
 
     /*
@@ -318,7 +336,6 @@ class DotTest extends TestCase
         $dot->merge(['foo' => ['bar' => 'qux']]);
 
         $this->assertEquals('qux', $dot->get('foo.bar'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testMergeArrayWithKey()
@@ -347,6 +364,13 @@ class DotTest extends TestCase
         $this->assertEquals('qux', $dot1->get('foo.bar'));
     }
 
+    public function testMergeReturnsDot()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
+
+        $this->assertInstanceOf(Dot::class, $dot->merge(['foo' => ['bar' => 'qux']]));
+    }
+
     /*
      * --------------------------------------------------------------
      * Recursive merge
@@ -360,7 +384,6 @@ class DotTest extends TestCase
 
         $this->assertEquals(['baz', 'qux'], $dot->get('foo.bar'));
         $this->assertEquals('quuz', $dot->get('foo.quux'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testRecursiveMergeArrayWithKey()
@@ -392,6 +415,16 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
+    public function testRecursiveMergeReturnsDot()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
+
+        $this->assertInstanceOf(
+            Dot::class,
+            $dot->mergeRecursive(['foo' => ['bar' => 'qux', 'quux' => 'quuz']])
+        );
+    }
+
     /*
      * --------------------------------------------------------------
      * Recursive distinct merge
@@ -405,7 +438,6 @@ class DotTest extends TestCase
 
         $this->assertEquals('qux', $dot->get('foo.bar'));
         $this->assertEquals('quuz', $dot->get('foo.quux'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testRecursiveDistinctMergeArrayWithKey()
@@ -435,6 +467,16 @@ class DotTest extends TestCase
 
         $this->assertEquals('qux', $dot1->get('foo.bar'));
         $this->assertEquals('quuz', $dot1->get('foo.quux'));
+    }
+
+    public function testRecursivDistincteMergeReturnsDot()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
+
+        $this->assertInstanceOf(
+            Dot::class,
+            $dot->mergeRecursiveDistinct(['foo' => ['bar' => 'qux', 'quux' => 'quuz']])
+        );
     }
 
     /*
@@ -485,7 +527,6 @@ class DotTest extends TestCase
         $dot->push('foo');
 
         $this->assertEquals('foo', $dot->get(0));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testPushValueToKey()
@@ -494,6 +535,13 @@ class DotTest extends TestCase
         $dot->push('foo', 'baz');
 
         $this->assertSame(['bar', 'baz'], $dot->get('foo'));
+    }
+
+    public function testPushReturnsDot()
+    {
+        $dot = $dot = new Dot();
+
+        $this->assertInstanceOf(Dot::class, $dot->push('foo'));
     }
 
     /*
@@ -508,7 +556,6 @@ class DotTest extends TestCase
         $dot->replace(['foo' => ['qux' => 'quux']]);
 
         $this->assertEquals(['qux' => 'quux'], $dot->get('foo'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testReplaceKeyWithArray()
@@ -537,6 +584,13 @@ class DotTest extends TestCase
         $this->assertEquals(['bar' => 'baz', 'qux' => 'corge'], $dot1->get('foo'));
     }
 
+    public function testReplaceReturnsDot()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
+
+        $this->assertInstanceOf(Dot::class, $dot->replace(['foo' => ['qux' => 'quux']]));
+    }
+
     /*
      * --------------------------------------------------------------
      * Set
@@ -549,7 +603,6 @@ class DotTest extends TestCase
         $dot->set('foo.bar', 'baz');
 
         $this->assertEquals('baz', $dot->get('foo.bar'));
-        $this->assertInstanceOf(Dot::class, $dot);
     }
 
     public function testSetArrayOfKeyValuePairs()
@@ -558,6 +611,13 @@ class DotTest extends TestCase
         $dot->set(['foo' => 'bar', 'baz' => 'qux']);
 
         $this->assertSame(['foo' => 'bar', 'baz' => 'qux'], $dot->all());
+    }
+
+    public function testSetReturnsDot()
+    {
+        $dot = new Dot();
+
+        $this->assertInstanceOf(Dot::class, $dot->set('foo.bar', 'baz'));
     }
 
     /*
@@ -572,7 +632,13 @@ class DotTest extends TestCase
         $dot->setArray(['foo' => 'bar']);
 
         $this->assertSame(['foo' => 'bar'], $dot->all());
-        $this->assertInstanceOf(Dot::class, $dot);
+    }
+
+    public function testSetArrayReturnsDot()
+    {
+        $dot = new Dot();
+
+        $this->assertInstanceOf(Dot::class, $dot->setArray(['foo' => 'bar']));
     }
 
     /*
@@ -589,7 +655,14 @@ class DotTest extends TestCase
         $dot->set('foo', 'baz');
 
         $this->assertEquals('baz', $items['foo']);
-        $this->assertInstanceOf(Dot::class, $dot);
+    }
+
+    public function testSetReferenceReturnsDot()
+    {
+        $dot = new Dot();
+        $items = ['foo' => 'bar'];
+
+        $this->assertInstanceOf(Dot::class, $dot->setReference($items));
     }
 
     /*
