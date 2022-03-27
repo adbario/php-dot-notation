@@ -74,7 +74,9 @@ All methods not returning a specific value returns the Dot object for chaining:
 ```php
 $dot = dot();
 
-$dot->add('user.name', 'John')->set('user.email', 'john@example.com')->clear(); // returns empty Dot
+$dot->add('user.name', 'John')
+    ->set('user.email', 'john@example.com')
+    ->clear(); // returns empty Dot
 ```
 
 ## Methods
