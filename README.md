@@ -440,6 +440,27 @@ Returns all the stored items as JSON:
 echo $dot->toJson();
 ```
 
+## Contributing
+
+### Pull Requests
+ 1. Fork the Dot repository
+ 2. Create a new branch for each feature or improvement
+ 3. Send a pull request from each feature branch to the 3.x branch
+
+It is very important to separate new features or improvements into separate feature branches, and to send a pull request for each branch. This allows me to review and pull in new features or improvements individually.
+
+### Style Guide
+
+All pull requests must adhere to the [PSR-12 standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-12-extended-coding-style-guide.md).
+
+### Unit Testing
+
+All pull requests must be accompanied by passing unit tests and complete code coverage. Dot uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for testing.
+
+### Static Analysis
+
+All pull requests must pass static analysis using [PHPStan](https://github.com/sebastianbergmann/phpunit/).
+
 ## License
 
 [MIT license](LICENSE.md)
