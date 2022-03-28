@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dot - PHP dot notation access to arrays
  *

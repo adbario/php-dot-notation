@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dot - PHP dot notation access to arrays
  *
@@ -6,6 +7,7 @@
  * @link    https://github.com/adbario/php-dot-notation
  * @license https://github.com/adbario/php-dot-notation/blob/2.x/LICENSE.md (MIT License)
  */
+
 namespace Adbar\Tests;
 
 use Adbar\Dot;

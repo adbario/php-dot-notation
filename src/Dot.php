@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dot - PHP dot notation access to arrays
  *
@@ -6,6 +7,7 @@
  * @link    https://github.com/adbario/php-dot-notation
  * @license https://github.com/adbario/php-dot-notation/blob/2.x/LICENSE.md (MIT License)
  */
+
 namespace Adbar;
 
 use Countable;
@@ -173,9 +175,9 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 
         foreach ($items as $key => $value) {
             if (is_array($value) && !empty($value)) {
-                $flatten[] = $this->flatten($delimiter, $value, $prepend.$key.$delimiter);
+                $flatten[] = $this->flatten($delimiter, $value, $prepend . $key . $delimiter);
             } else {
-                $flatten[] = [$prepend.$key => $value];
+                $flatten[] = [$prepend . $key => $value];
             }
         }
 
