@@ -19,28 +19,28 @@ class DotTest extends TestCase
      * Construct
      * --------------------------------------------------------------
      */
-    public function testConstructWithoutValues()
+    public function testConstructWithoutValues(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertSame([], $dot->all());
     }
 
-    public function testConstructWithArray()
+    public function testConstructWithArray(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
         $this->assertEquals('bar', $dot->get('foo'));
     }
 
-    public function testConstructWithString()
+    public function testConstructWithString(): void
     {
         $dot = new Dot('foobar');
 
         $this->assertEquals('foobar', $dot->get(0));
     }
 
-    public function testConstructWithDot()
+    public function testConstructWithDot(): void
     {
         $dot1 = new Dot(['foo' => 'bar']);
         $dot2 = new Dot($dot1);
@@ -48,7 +48,7 @@ class DotTest extends TestCase
         $this->assertEquals('bar', $dot2->get('foo'));
     }
 
-    public function testConstructHelper()
+    public function testConstructHelper(): void
     {
         $dot = dot(['foo' => 'bar']);
 
@@ -56,7 +56,7 @@ class DotTest extends TestCase
         $this->assertEquals('bar', $dot->get('foo'));
     }
 
-    public function testConstructWithParsing()
+    public function testConstructWithParsing(): void
     {
         $dot = new Dot(['foo.bar' => 'baz']);
 
@@ -73,15 +73,15 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testAddKeyValuePair()
+    public function testAddKeyValuePair(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot->add('foo.bar', 'baz');
 
         $this->assertEquals('baz', $dot->get('foo.bar'));
     }
 
-    public function testAddValueToExistingKey()
+    public function testAddValueToExistingKey(): void
     {
         $dot = new Dot(['foo' => 'bar']);
         $dot->add('foo', 'baz');
@@ -89,7 +89,7 @@ class DotTest extends TestCase
         $this->assertEquals('bar', $dot->get('foo'));
     }
 
-    public function testAddArrayOfKeyValuePairs()
+    public function testAddArrayOfKeyValuePairs(): void
     {
         $dot = new Dot(['foobar' => 'baz']);
         $dot->add([
@@ -100,9 +100,9 @@ class DotTest extends TestCase
         $this->assertSame(['foobar' => 'baz', 'corge' => 'grault'], $dot->all());
     }
 
-    public function testAddReturnsDot()
+    public function testAddReturnsDot(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertInstanceOf(Dot::class, $dot->add('foo', 'bar'));
     }
@@ -113,7 +113,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testAllReturnsAllItems()
+    public function testAllReturnsAllItems(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
@@ -126,7 +126,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testClearKey()
+    public function testClearKey(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->clear('foo.bar');
@@ -134,15 +134,15 @@ class DotTest extends TestCase
         $this->assertSame([], $dot->get('foo.bar'));
     }
 
-    public function testClearNonExistingKey()
+    public function testClearNonExistingKey(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot->clear('foo');
 
         $this->assertSame([], $dot->get('foo'));
     }
 
-    public function testClearArrayOfKeys()
+    public function testClearArrayOfKeys(): void
     {
         $dot = new Dot(['foo' => 'bar', 'baz' => 'qux']);
         $dot->clear(['foo', 'baz']);
@@ -150,7 +150,7 @@ class DotTest extends TestCase
         $this->assertSame(['foo' => [], 'baz' => []], $dot->all());
     }
 
-    public function testClearAll()
+    public function testClearAll(): void
     {
         $dot = new Dot(['foo' => 'bar']);
         $dot->clear();
@@ -158,7 +158,7 @@ class DotTest extends TestCase
         $this->assertSame([], $dot->all());
     }
 
-    public function testClearReturnsDot()
+    public function testClearReturnsDot(): void
     {
         $dot = new Dot();
 
@@ -171,7 +171,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testDeleteKey()
+    public function testDeleteKey(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->delete('foo.bar');
@@ -179,7 +179,7 @@ class DotTest extends TestCase
         $this->assertFalse($dot->has('foo.bar'));
     }
 
-    public function testDeleteNonExistingKey()
+    public function testDeleteNonExistingKey(): void
     {
         $dot = new Dot(['foo' => 'bar']);
         $dot->delete('baz.qux');
@@ -187,7 +187,7 @@ class DotTest extends TestCase
         $this->assertSame(['foo' => 'bar'], $dot->all());
     }
 
-    public function testDeleteArrayOfKeys()
+    public function testDeleteArrayOfKeys(): void
     {
         $dot = new Dot(['foo' => 'bar', 'baz' => 'qux']);
         $dot->delete(['foo', 'baz']);
@@ -195,7 +195,7 @@ class DotTest extends TestCase
         $this->assertSame([], $dot->all());
     }
 
-    public function testDeleteReturnsDot()
+    public function testDeleteReturnsDot(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
@@ -207,7 +207,7 @@ class DotTest extends TestCase
      * Flatten
      * --------------------------------------------------------------
      */
-    public function testFlatten()
+    public function testFlatten(): void
     {
         $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
         $flatten = $dot->flatten();
@@ -215,7 +215,7 @@ class DotTest extends TestCase
         $this->assertEquals('baz', $flatten['foo.bar.0']);
     }
 
-    public function testFlattenWithCustomDelimiter()
+    public function testFlattenWithCustomDelimiter(): void
     {
         $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
         $flatten = $dot->flatten('_');
@@ -229,23 +229,23 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testGetValueFromKey()
+    public function testGetValueFromKey(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
         $this->assertEquals('baz', $dot->get('foo.bar'));
     }
 
-    public function testGetValueFromNonExistingKey()
+    public function testGetValueFromNonExistingKey(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertNull($dot->get('foo'));
     }
 
-    public function testGetGivenDefaultValueFromNonExistingKey()
+    public function testGetGivenDefaultValueFromNonExistingKey(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertEquals('bar', $dot->get('foo', 'bar'));
     }
@@ -256,7 +256,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testHasKey()
+    public function testHasKey(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
@@ -267,7 +267,7 @@ class DotTest extends TestCase
         $this->assertFalse($dot->has('foo.bar'));
     }
 
-    public function testHasArrayOfKeys()
+    public function testHasArrayOfKeys(): void
     {
         $dot = new Dot(['foo' => 'bar', 'baz' => 'qux']);
 
@@ -278,9 +278,9 @@ class DotTest extends TestCase
         $this->assertFalse($dot->has(['foo', 'baz']));
     }
 
-    public function testHasWithEmptyDot()
+    public function testHasWithEmptyDot(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertFalse($dot->has('foo'));
     }
@@ -291,9 +291,9 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testIsEmptyDot()
+    public function testIsEmptyDot(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertTrue($dot->isEmpty());
 
@@ -302,9 +302,9 @@ class DotTest extends TestCase
         $this->assertFalse($dot->isEmpty());
     }
 
-    public function testIsEmptyKey()
+    public function testIsEmptyKey(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertTrue($dot->isEmpty('foo.bar'));
 
@@ -313,9 +313,9 @@ class DotTest extends TestCase
         $this->assertFalse($dot->isEmpty('foo.bar'));
     }
 
-    public function testIsEmptyArrayOfKeys()
+    public function testIsEmptyArrayOfKeys(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertTrue($dot->isEmpty(['foo', 'bar']));
 
@@ -330,7 +330,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testMergeArrayWithDot()
+    public function testMergeArrayWithDot(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->merge(['foo' => ['bar' => 'qux']]);
@@ -338,7 +338,7 @@ class DotTest extends TestCase
         $this->assertEquals('qux', $dot->get('foo.bar'));
     }
 
-    public function testMergeArrayWithKey()
+    public function testMergeArrayWithKey(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->merge('foo', ['bar' => 'qux']);
@@ -346,7 +346,7 @@ class DotTest extends TestCase
         $this->assertEquals('qux', $dot->get('foo.bar'));
     }
 
-    public function testMergeDotWithDot()
+    public function testMergeDotWithDot(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
         $dot2 = new Dot(['foo' => ['bar' => 'qux']]);
@@ -355,7 +355,7 @@ class DotTest extends TestCase
         $this->assertEquals('qux', $dot1->get('foo.bar'));
     }
 
-    public function testMergeDotObjectWithKey()
+    public function testMergeDotObjectWithKey(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
         $dot2 = new Dot(['bar' => 'qux']);
@@ -364,7 +364,7 @@ class DotTest extends TestCase
         $this->assertEquals('qux', $dot1->get('foo.bar'));
     }
 
-    public function testMergeReturnsDot()
+    public function testMergeReturnsDot(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
@@ -377,7 +377,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testRecursiveMergeArrayWithDot()
+    public function testRecursiveMergeArrayWithDot(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursive(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
@@ -386,7 +386,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
-    public function testRecursiveMergeArrayWithKey()
+    public function testRecursiveMergeArrayWithKey(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursive('foo', ['bar' => 'qux', 'quux' => 'quuz']);
@@ -395,7 +395,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
-    public function testRecursiveMergeDotWithDot()
+    public function testRecursiveMergeDotWithDot(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
         $dot2 = new Dot(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
@@ -405,7 +405,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
-    public function testRecursiveMergeDotObjectWithKey()
+    public function testRecursiveMergeDotObjectWithKey(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
         $dot2 = new Dot(['bar' => 'qux', 'quux' => 'quuz']);
@@ -415,7 +415,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
-    public function testRecursiveMergeReturnsDot()
+    public function testRecursiveMergeReturnsDot(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
@@ -431,7 +431,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testRecursiveDistinctMergeArrayWithDot()
+    public function testRecursiveDistinctMergeArrayWithDot(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursiveDistinct(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
@@ -440,7 +440,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
-    public function testRecursiveDistinctMergeArrayWithKey()
+    public function testRecursiveDistinctMergeArrayWithKey(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursiveDistinct('foo', ['bar' => 'qux', 'quux' => 'quuz']);
@@ -449,7 +449,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot->get('foo.quux'));
     }
 
-    public function testRecursiveDistinctMergeDotWithDot()
+    public function testRecursiveDistinctMergeDotWithDot(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
         $dot2 = new Dot(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
@@ -459,7 +459,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
-    public function testRecursiveDistinctMergeDotObjectWithKey()
+    public function testRecursiveDistinctMergeDotObjectWithKey(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
         $dot2 = new Dot(['bar' => 'qux', 'quux' => 'quuz']);
@@ -469,7 +469,7 @@ class DotTest extends TestCase
         $this->assertEquals('quuz', $dot1->get('foo.quux'));
     }
 
-    public function testRecursivDistincteMergeReturnsDot()
+    public function testRecursivDistincteMergeReturnsDot(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
@@ -485,7 +485,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testPullKey()
+    public function testPullKey(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
@@ -493,21 +493,21 @@ class DotTest extends TestCase
         $this->assertFalse($dot->has('foo'));
     }
 
-    public function testPullNonExistingKey()
+    public function testPullNonExistingKey(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertNull($dot->pull('foo'));
     }
 
-    public function testPullNonExistingKeyWithDefaultValue()
+    public function testPullNonExistingKeyWithDefaultValue(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertEquals('bar', $dot->pull('foo', 'bar'));
     }
 
-    public function testPullAll()
+    public function testPullAll(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
@@ -521,15 +521,15 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testPushValue()
+    public function testPushValue(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot->push('foo');
 
         $this->assertEquals('foo', $dot->get(0));
     }
 
-    public function testPushValueToKey()
+    public function testPushValueToKey(): void
     {
         $dot = new Dot(['foo' => [0 => 'bar']]);
         $dot->push('foo', 'baz');
@@ -537,7 +537,7 @@ class DotTest extends TestCase
         $this->assertSame(['bar', 'baz'], $dot->get('foo'));
     }
 
-    public function testPushReturnsDot()
+    public function testPushReturnsDot(): void
     {
         $dot = $dot = new Dot();
 
@@ -550,7 +550,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testReplaceWithArray()
+    public function testReplaceWithArray(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->replace(['foo' => ['qux' => 'quux']]);
@@ -558,7 +558,7 @@ class DotTest extends TestCase
         $this->assertEquals(['qux' => 'quux'], $dot->get('foo'));
     }
 
-    public function testReplaceKeyWithArray()
+    public function testReplaceKeyWithArray(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz', 'qux' => 'quux']]);
         $dot->replace('foo', ['qux' => 'corge']);
@@ -566,7 +566,7 @@ class DotTest extends TestCase
         $this->assertEquals(['bar' => 'baz', 'qux' => 'corge'], $dot->get('foo'));
     }
 
-    public function testReplaceWithDot()
+    public function testReplaceWithDot(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz']]);
         $dot2 = new Dot(['foo' => ['bar' => 'qux']]);
@@ -575,7 +575,7 @@ class DotTest extends TestCase
         $this->assertEquals(['bar' => 'qux'], $dot1->get('foo'));
     }
 
-    public function testReplaceKeyWithDot()
+    public function testReplaceKeyWithDot(): void
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz', 'qux' => 'quux']]);
         $dot2 = new Dot(['qux' => 'corge']);
@@ -584,7 +584,7 @@ class DotTest extends TestCase
         $this->assertEquals(['bar' => 'baz', 'qux' => 'corge'], $dot1->get('foo'));
     }
 
-    public function testReplaceReturnsDot()
+    public function testReplaceReturnsDot(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
@@ -597,23 +597,23 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testSetKeyValuePair()
+    public function testSetKeyValuePair(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot->set('foo.bar', 'baz');
 
         $this->assertEquals('baz', $dot->get('foo.bar'));
     }
 
-    public function testSetArrayOfKeyValuePairs()
+    public function testSetArrayOfKeyValuePairs(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot->set(['foo' => 'bar', 'baz' => 'qux']);
 
         $this->assertSame(['foo' => 'bar', 'baz' => 'qux'], $dot->all());
     }
 
-    public function testSetReturnsDot()
+    public function testSetReturnsDot(): void
     {
         $dot = new Dot();
 
@@ -626,15 +626,15 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testSetArray()
+    public function testSetArray(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot->setArray(['foo' => 'bar']);
 
         $this->assertSame(['foo' => 'bar'], $dot->all());
     }
 
-    public function testSetArrayReturnsDot()
+    public function testSetArrayReturnsDot(): void
     {
         $dot = new Dot();
 
@@ -647,9 +647,9 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testSetReference()
+    public function testSetReference(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $items = ['foo' => 'bar'];
         $dot->setReference($items);
         $dot->set('foo', 'baz');
@@ -657,7 +657,7 @@ class DotTest extends TestCase
         $this->assertEquals('baz', $items['foo']);
     }
 
-    public function testSetReferenceReturnsDot()
+    public function testSetReferenceReturnsDot(): void
     {
         $dot = new Dot();
         $items = ['foo' => 'bar'];
@@ -671,7 +671,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testOffsetExists()
+    public function testOffsetExists(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
@@ -682,30 +682,30 @@ class DotTest extends TestCase
         $this->assertFalse(isset($dot['foo']));
     }
 
-    public function testOffsetGet()
+    public function testOffsetGet(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
         $this->assertEquals('bar', $dot['foo']);
     }
 
-    public function testOffsetSet()
+    public function testOffsetSet(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot['foo.bar'] = 'baz';
 
         $this->assertEquals('baz', $dot['foo.bar']);
     }
 
-    public function testOffsetSetWithoutKey()
+    public function testOffsetSetWithoutKey(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
         $dot[] = 'foobar';
 
         $this->assertEquals('foobar', $dot->get(0));
     }
 
-    public function testOffsetUnset()
+    public function testOffsetUnset(): void
     {
         $dot = new Dot(['foo' => 'bar']);
         unset($dot['foo']);
@@ -719,43 +719,43 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testToJsonAll()
+    public function testToJsonAll(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
         $this->assertJsonStringEqualsJsonString(
-            json_encode(['foo' => 'bar']),
-            $dot->toJson()
+            '{"foo":"bar"}',
+            (string) $dot->toJson()
         );
     }
 
-    public function testToJsonAllWithOption()
+    public function testToJsonAllWithOption(): void
     {
-        $dot = new Dot(['foo' => 'bar']);
+        $dot = new Dot(['foo' => "'bar'"]);
 
         $this->assertJsonStringEqualsJsonString(
-            json_encode(['foo' => 'bar'], JSON_HEX_APOS),
-            $dot->toJson(JSON_HEX_APOS)
+            '{"foo":"\u0027bar\u0027"}',
+            (string) $dot->toJson(JSON_HEX_APOS)
         );
     }
 
-    public function testToJsonKey()
+    public function testToJsonKey(): void
     {
-        $dot = new Dot(['foo' => ['bar' => 'value']]);
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
         $this->assertJsonStringEqualsJsonString(
-            json_encode(['bar' => "value"]),
-            $dot->toJson('foo')
+            '{"bar":"baz"}',
+            (string) $dot->toJson('foo')
         );
     }
 
-    public function testToJsonKeyWithOptions()
+    public function testToJsonKeyWithOptions(): void
     {
-        $dot = new Dot(['foo' => ['bar' => 'value']]);
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
         $this->assertEquals(
-            json_encode(['bar' => 'value'], JSON_HEX_APOS),
-            $dot->toJson('foo', JSON_HEX_APOS)
+            json_encode(['bar' => 'baz'], JSON_HEX_APOS),
+            (string) $dot->toJson('foo', JSON_HEX_APOS)
         );
     }
 
@@ -765,7 +765,7 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testSetState()
+    public function testSetState(): void
     {
         $this->assertEquals(
             (object) ['foo' => ['bar' => 'baz']],
@@ -773,7 +773,7 @@ class DotTest extends TestCase
         );
     }
 
-    public function testVarExport()
+    public function testVarExport(): void
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
@@ -797,14 +797,14 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testCount()
+    public function testCount(): void
     {
         $dot = new Dot([1, 2, 3]);
 
         $this->assertEquals(3, $dot->count());
     }
 
-    public function testCountable()
+    public function testCountable(): void
     {
         $dot = new Dot([1, 2, 3]);
 
@@ -817,16 +817,18 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testGetIteratorReturnsArrayIterator()
+    public function testGetIteratorReturnsArrayIterator(): void
     {
-        $dot = new Dot;
+        $dot = new Dot();
 
         $this->assertInstanceOf(ArrayIterator::class, $dot->getIterator());
     }
 
-    public function testIterationReturnsOriginalValues()
+    public function testIterationReturnsOriginalValues(): void
     {
         $dot = new Dot([1, 2, 3]);
+
+        $items = [];
 
         foreach ($dot as $item) {
             $items[] = $item;
@@ -841,13 +843,13 @@ class DotTest extends TestCase
      * --------------------------------------------------------------
      */
 
-    public function testJsonEncodingReturnsJson()
+    public function testJsonEncodingReturnsJson(): void
     {
         $dot = new Dot(['foo' => 'bar']);
 
         $this->assertJsonStringEqualsJsonString(
-            json_encode(['foo' => 'bar']),
-            json_encode($dot)
+            '{"foo":"bar"}',
+            (string) json_encode($dot)
         );
     }
 }
