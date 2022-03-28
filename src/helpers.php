@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dot - PHP dot notation access to arrays
  *
@@ -13,9 +14,9 @@ if (! function_exists('dot')) {
     /**
      * Create a new Dot object with the given items
      *
-     * @param  mixed $items
+     * @param  mixed  $items
      * @param  bool  $parse
-     * @return \Adbar\Dot
+     * @return \Adbar\Dot<array-key, mixed>
      */
     function dot($items, $parse = false)
     {
