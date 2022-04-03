@@ -1,9 +1,14 @@
-# Dot - PHP dot notation access to arrays
+![PHP Dot Notation](https://user-images.githubusercontent.com/22136575/161442912-96d96b7b-9c99-4854-959c-86636093cea4.png)
 
-[![Build Status](https://github.com/adbario/php-dot-notation/actions/workflows/ci.yaml/badge.svg)](https://github.com/adbario/php-dot-notation/actions?query=branch%3A3.x)
-[![Coverage Status](https://coveralls.io/repos/github/adbario/php-dot-notation/badge.svg?branch=2.x)](https://coveralls.io/github/adbario/php-dot-notation?branch=3.x)
-[![Total Downloads](https://poser.pugx.org/adbario/php-dot-notation/downloads)](https://packagist.org/packages/adbario/php-dot-notation)
-[![License](https://poser.pugx.org/adbario/php-dot-notation/license)](LICENSE.md)
+<div align="center">
+  <a href="https://github.com/adbario/php-dot-notation/actions?query=branch%3A3.x"><img src="https://github.com/adbario/php-dot-notation/actions/workflows/ci.yaml/badge.svg" alt="Build Status"></a>
+  <a href="https://coveralls.io/github/adbario/php-dot-notation?branch=3.x"><img src="https://coveralls.io/repos/github/adbario/php-dot-notation/badge.svg?branch=3.x" alt="Coverage Status"></a>
+  <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://poser.pugx.org/adbario/php-dot-notation/downloads" alt="Total Downloads"></a>
+  <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://poser.pugx.org/adbario/php-dot-notation/v/stable.svg" alt="Latest Stable Version"></a>
+  <a href="LICENSE.md"><img src="https://poser.pugx.org/adbario/php-dot-notation/license" alt="License"></a>
+</div>
+
+# Dot - Dot notation access to PHP arrays
 
 Dot provides an easy access to arrays of data with dot notation in a lightweight and fast way. Inspired by Laravel Collection.
 
