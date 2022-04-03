@@ -31,12 +31,21 @@ use Traversable;
  */
 class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
+    public const DEFAULT_DELIMITER = '.';
+
     /**
      * The stored items
      *
      * @var array<TKey, TValue>
      */
     protected $items = [];
+
+    /**
+     * The delimiter for instance
+     *
+     * @var null|string
+     */
+    protected $delimiter;
 
     /**
      * Create a new Dot instance
@@ -54,6 +63,33 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         } else {
             $this->items = $items;
         }
+    }
+
+    /**
+     * Set delimiter for the instance
+     *
+     * @param null|string $delimiter
+     * @return $this
+     */
+    public function setDelimiter($delimiter = null)
+    {
+        $this->delimiter = $delimiter ?: null;
+
+        return $this;
+    }
+
+    /**
+     * Get delimiter for the instance
+     *
+     * @return non-empty-string
+     */
+    public function getDelimiter()
+    {
+        if (strlen($this->delimiter)) {
+            return $this->delimiter;
+        }
+
+        return self::DEFAULT_DELIMITER;
     }
 
     /**
@@ -128,7 +164,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             }
 
             $items = &$this->items;
-            $segments = explode('.', $key);
+            $segments = explode($this->getDelimiter(), $key);
             $lastSegment = array_pop($segments);
 
             foreach ($segments as $segment) {
@@ -165,8 +201,10 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  string  $prepend
      * @return array<TKey, TValue>
      */
-    public function flatten($delimiter = '.', $items = null, $prepend = '')
+    public function flatten($delimiter = null, $items = null, $prepend = '')
     {
+        $delimiter = $delimiter ?? $this->getDelimiter();
+
         $flatten = [];
 
         if ($items === null) {
@@ -201,13 +239,13 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             return $this->items[$key];
         }
 
-        if (!is_string($key) || strpos($key, '.') === false) {
+        if (!is_string($key) || strpos($key, $this->getDelimiter()) === false) {
             return $default;
         }
 
         $items = $this->items;
 
-        foreach (explode('.', $key) as $segment) {
+        foreach (explode($this->getDelimiter(), $key) as $segment) {
             if (!is_array($items) || !$this->exists($items, $segment)) {
                 return $default;
             }
@@ -258,7 +296,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
                 continue;
             }
 
-            foreach (explode('.', $key) as $segment) {
+            foreach (explode($this->getDelimiter(), $key) as $segment) {
                 if (!is_array($items) || !$this->exists($items, $segment)) {
                     return false;
                 }
@@ -487,7 +525,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         $items = &$this->items;
 
         if (is_string($keys)) {
-            foreach (explode('.', $keys) as $key) {
+            foreach (explode($this->getDelimiter(), $keys) as $key) {
                 if (!isset($items[$key]) || !is_array($items[$key])) {
                     $items[$key] = [];
                 }

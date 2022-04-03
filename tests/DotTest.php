@@ -541,7 +541,7 @@ class DotTest extends TestCase
 
     public function testPushReturnsDot(): void
     {
-        $dot = $dot = new Dot();
+        $dot = new Dot();
 
         $this->assertInstanceOf(Dot::class, $dot->push('foo'));
     }
@@ -669,6 +669,49 @@ class DotTest extends TestCase
 
     /*
      * --------------------------------------------------------------
+     * Operations with custom delimiter
+     * --------------------------------------------------------------
+     */
+
+    public function testSetOrUnsetCustomDelimiter(): void
+    {
+        $dot = new Dot();
+        $this->assertEquals('.', $dot->getDelimiter());
+        $dot->setDelimiter('|');
+        $this->assertEquals('|', $dot->getDelimiter());
+        $dot->setDelimiter();
+        $this->assertEquals('.', $dot->getDelimiter());
+    }
+
+    public function testSetKeyValueWithCustomDelimiter(): void
+    {
+        $dot = new Dot();
+        $dot->setDelimiter('|');
+        $dot->set('foo|bar', 'baz');
+
+        $this->assertEquals('baz', $dot->get('foo|bar'));
+    }
+
+    public function testSetKeyValuePairWithCustomDelimiter(): void
+    {
+        $dot = new Dot();
+        $dot->setDelimiter('|');
+        $dot->set('foo|bar', 'baz');
+
+        $this->assertEquals('baz', $dot->get('foo|bar'));
+    }
+
+    public function testFlattenForCustomDelimiter(): void
+    {
+        $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
+        $dot->setDelimiter('|');
+        $flatten = $dot->flatten('_');
+        $this->assertEquals('xyz', $flatten['foo_abc']);
+        $this->assertEquals('baz', $flatten['foo_bar_0']);
+    }
+
+    /*
+     * --------------------------------------------------------------
      * ArrayAccess interface
      * --------------------------------------------------------------
      */
@@ -788,6 +831,7 @@ class DotTest extends TestCase
             "      'bar' => 'baz',\n" .
             "    ),\n" .
             "  ),\n" .
+            "   'delimiter' => NULL,\n" .
             "))",
             var_export($dot, true)
         );
