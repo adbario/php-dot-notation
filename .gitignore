@@ -1,5 +1,9 @@
-build
-vendor
+.DS_Store
 .idea
+.phpunit.result.cache
+.vscode
+clover.xml
 composer.lock
 phpunit.xml
+vendor
+coverage
