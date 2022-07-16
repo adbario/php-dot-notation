@@ -569,6 +569,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  int|string  $key
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($key): bool
     {
         return $this->has($key);
@@ -592,6 +593,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param int|string|null  $key
      * @param mixed  $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value): void
     {
         if ($key === null) {
@@ -609,6 +611,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param int|string  $key
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key): void
     {
         $this->delete($key);
@@ -626,6 +629,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * @param  int|string|null $key
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count($key = null): int
     {
         return count($this->get($key));
@@ -642,6 +646,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @return \ArrayIterator<TKey, TValue>
      */
+    #[\ReturnTypeWillChange]
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->items);
@@ -658,6 +663,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @return array<TKey, TValue>
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize(): array
     {
         return $this->items;
