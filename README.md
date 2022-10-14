@@ -67,6 +67,15 @@ $dot = dot();
 $dot = dot($array);
 ```
 
+It is possible use an alternative delimiter from the default dot (`.`) with the second constructor parameter.  Using an underscore instead:
+
+```php
+$dot = new \Adbar\Dot($array, '_');
+
+// With the helper
+$dot = dot($array, '_');
+```
+
 ## Methods
 
 Dot has the following methods:
