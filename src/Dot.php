@@ -47,7 +47,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     public function __construct($items = [], $delimiter = '.')
     {
         $this->items = $this->getArrayItems($items);
-        $this->delimiter = $delimiter;
+        $this->delimiter = strlen($delimiter) ? $delimiter : '.';
     }
 
     /**
