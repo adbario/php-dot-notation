@@ -70,6 +70,14 @@ class DotTest extends TestCase
         $this->assertEquals('baz', $dot->get('foo.bar'));
     }
 
+    public function testAddKeyValuePairWithCustomDelimeter()
+    {
+        $dot = new Dot([], '/');
+        $dot->add('foo/bar', 'baz');
+
+        $this->assertEquals('baz', $dot->get('foo/bar'));
+    }
+
     public function testAddValueToExistingKey()
     {
         $dot = new Dot(['foo' => 'bar']);
@@ -116,6 +124,14 @@ class DotTest extends TestCase
         $this->assertSame([], $dot->get('foo.bar'));
     }
 
+    public function testClearKeyWithCustomDelimiter()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']], '/');
+        $dot->clear('foo/bar');
+
+        $this->assertSame([], $dot->get('foo/bar'));
+    }
+
     public function testClearNonExistingKey()
     {
         $dot = new Dot;
@@ -154,6 +170,14 @@ class DotTest extends TestCase
         $this->assertFalse($dot->has('foo.bar'));
     }
 
+    public function testDeleteKeyWithCustomDelimeter()
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']], '/');
+        $dot->delete('foo/bar');
+
+        $this->assertFalse($dot->has('foo/bar'));
+    }
+
     public function testDeleteNonExistingKey()
     {
         $dot = new Dot(['foo' => 'bar']);
@@ -182,14 +206,24 @@ class DotTest extends TestCase
         $this->assertEquals('xyz', $flatten['foo.abc']);
         $this->assertEquals('baz', $flatten['foo.bar.0']);
     }
-    
+
     public function testFlattenWithCustomDelimiter()
     {
-        $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
+        $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]], '/');
+        $flatten = $dot->flatten();
+        $this->assertEquals('xyz', $flatten['foo/abc']);
+        $this->assertEquals('baz', $flatten['foo/bar/0']);
+    }
+
+
+    public function testFlattenWithDoubleCustomDelimiter()
+    {
+        $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]], '/');
         $flatten = $dot->flatten('_');
         $this->assertEquals('xyz', $flatten['foo_abc']);
         $this->assertEquals('baz', $flatten['foo_bar_0']);
     }
+
 
     /*
      * --------------------------------------------------------------
@@ -531,6 +565,15 @@ class DotTest extends TestCase
 
         $this->assertEquals('baz', $dot->get('foo.bar'));
     }
+
+    public function testSetKeyValuePairWithCustomDelimiter()
+    {
+        $dot = new Dot([], '/');
+        $dot->set('foo/bar', 'baz');
+
+        $this->assertEquals('baz', $dot->get('foo/bar'));
+    }
+
 
     public function testSetArrayOfKeyValuePairs()
     {
