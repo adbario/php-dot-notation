@@ -62,6 +62,9 @@ $dot = new \Adbar\Dot($array);
 
 // Or with auto parsing dot notation keys in existing array
 $dot = new \Adbar\Dot($array, true);
+
+// You can also set a custom delimiter instead of the default dot (.)
+$dot = new \Adbar\Dot($array, false, "_");
 ```
 
 You can also use a helper function to create the object:
@@ -73,6 +76,9 @@ $dot = dot($array);
 
 // Or with auto parsing dot notation keys in existing array
 $dot = dot($array, true);
+
+// You can also set a custom delimiter instead of the default dot (.)
+$dot = dot($array, true, "_");
 ```
 
 All methods not returning a specific value returns the Dot object for chaining:
