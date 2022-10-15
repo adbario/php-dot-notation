@@ -5,7 +5,7 @@
  *
  * @author  Riku Särkinen <riku@adbar.io>
  * @link    https://github.com/adbario/php-dot-notation
- * @license https://github.com/adbario/php-dot-notation/blob/2.x/LICENSE.md (MIT License)
+ * @license https://github.com/adbario/php-dot-notation/blob/3.x/LICENSE.md (MIT License)
  */
 
 namespace Adbar;
@@ -36,18 +36,28 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @var array<TKey, TValue>
      */
-    protected $items = [];
+    protected $items;
+
+    /**
+     * The character to use as a delimiter, defaults to dot (.)
+     *
+     * @var non-empty-string
+     */
+    protected $delimiter = ".";
 
     /**
      * Create a new Dot instance
      *
      * @param  mixed  $items
      * @param  bool  $parse
+     * @param  non-empty-string  $delimiter
      * @return void
      */
-    public function __construct($items = [], $parse = false)
+    public function __construct($items = [], $parse = false, $delimiter = ".")
     {
         $items = $this->getArrayItems($items);
+
+        $this->delimiter = $delimiter ?: ".";
 
         if ($parse) {
             $this->set($items);
@@ -128,7 +138,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             }
 
             $items = &$this->items;
-            $segments = explode('.', $key);
+            $segments = explode($this->delimiter, $key);
             $lastSegment = array_pop($segments);
 
             foreach ($segments as $segment) {
@@ -201,13 +211,13 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             return $this->items[$key];
         }
 
-        if (!is_string($key) || strpos($key, '.') === false) {
+        if (!is_string($key) || strpos($key, $this->delimiter) === false) {
             return $default;
         }
 
         $items = $this->items;
 
-        foreach (explode('.', $key) as $segment) {
+        foreach (explode($this->delimiter, $key) as $segment) {
             if (!is_array($items) || !$this->exists($items, $segment)) {
                 return $default;
             }
@@ -258,7 +268,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
                 continue;
             }
 
-            foreach (explode('.', $key) as $segment) {
+            foreach (explode($this->delimiter, $key) as $segment) {
                 if (!is_array($items) || !$this->exists($items, $segment)) {
                     return false;
                 }
@@ -487,7 +497,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
         $items = &$this->items;
 
         if (is_string($keys)) {
-            foreach (explode('.', $keys) as $key) {
+            foreach (explode($this->delimiter, $keys) as $key) {
                 if (!isset($items[$key]) || !is_array($items[$key])) {
                     $items[$key] = [];
                 }

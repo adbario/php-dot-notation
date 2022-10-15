@@ -5,7 +5,7 @@
  *
  * @author  Riku Särkinen <riku@adbar.io>
  * @link    https://github.com/adbario/php-dot-notation
- * @license https://github.com/adbario/php-dot-notation/blob/2.x/LICENSE.md (MIT License)
+ * @license https://github.com/adbario/php-dot-notation/blob/3.x/LICENSE.md (MIT License)
  */
 
 namespace Adbar\Tests;
@@ -50,6 +50,28 @@ class DotTest extends TestCase
         $this->assertEquals('bar', $dot2->get('foo'));
     }
 
+    public function testConstructWithParsing(): void
+    {
+        $dot = new Dot(['foo.bar' => 'baz']);
+
+        $this->assertEquals(['foo.bar' => 'baz'], $dot->get());
+
+        $dot = new Dot(['foo.bar' => 'baz'], true);
+
+        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+    }
+
+    public function testConstructWithCustomDelimiter(): void
+    {
+        $dot = new Dot(['foo_bar' => 'baz'], false, "_");
+
+        $this->assertEquals(['foo_bar' => 'baz'], $dot->get());
+
+        $dot = new Dot(['foo_bar' => 'baz'], true, "_");
+
+        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+    }
+
     public function testConstructHelper(): void
     {
         $dot = dot(['foo' => 'bar']);
@@ -58,13 +80,20 @@ class DotTest extends TestCase
         $this->assertEquals('bar', $dot->get('foo'));
     }
 
-    public function testConstructWithParsing(): void
+    public function testConstructHelpertWithParsing(): void
     {
-        $dot = new Dot(['foo.bar' => 'baz']);
+        $dot = dot(['foo.bar' => 'baz'], true);
 
-        $this->assertEquals(['foo.bar' => 'baz'], $dot->get());
+        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+    }
 
-        $dot = new Dot(['foo.bar' => 'baz'], true);
+    public function testConstructHelpertWithCustomDelimiter(): void
+    {
+        $dot = dot(['foo_bar' => 'baz'], false, "_");
+
+        $this->assertEquals(['foo_bar' => 'baz'], $dot->get());
+
+        $dot = dot(['foo_bar' => 'baz'], true, "_");
 
         $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
     }
@@ -788,6 +817,7 @@ class DotTest extends TestCase
             "      'bar' => 'baz',\n" .
             "    ),\n" .
             "  ),\n" .
+            "   'delimiter' => '.',\n" .
             "))",
             var_export($dot, true)
         );
