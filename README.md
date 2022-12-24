@@ -1,7 +1,7 @@
 ![PHP Dot Notation](https://user-images.githubusercontent.com/22136575/161442912-96d96b7b-9c99-4854-959c-86636093cea4.png)
 
 <div align="center">
-  <a href="https://github.com/adbario/php-dot-notation/actions/workflows/tests.yml?query=branch%3A3.x"><img src="https://img.shields.io/github/workflow/status/adbario/php-dot-notation/tests/3.x?label=tests&style=for-the-badge" alt="Build Status"></a>
+  <a href="https://github.com/adbario/php-dot-notation/actions/workflows/tests.yml?query=branch%3A3.x"><img src="https://img.shields.io/github/actions/workflow/status/adbario/php-dot-notation/tests.yml?branch=3.x&label=Tests&style=for-the-badge" alt="Tests Status"></a>
   <a href="https://coveralls.io/github/adbario/php-dot-notation?branch=3.x"><img src="https://img.shields.io/coveralls/github/adbario/php-dot-notation/3.x?style=for-the-badge" alt="Coverage Status"></a>
   <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/packagist/dt/adbario/php-dot-notation?style=for-the-badge" alt="Total Downloads"></a>
   <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/packagist/v/adbario/php-dot-notation?label=stable&style=for-the-badge" alt="Latest Stable Version"></a>
