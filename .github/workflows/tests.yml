@@ -12,12 +12,12 @@ jobs:
         php: ['7.4', '8.0', '8.1']
         experimental: [false]
         include:
-          - php: 8.1
+          - php: '8.1'
             analysis: true
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
