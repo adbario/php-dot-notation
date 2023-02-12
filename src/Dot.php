@@ -36,7 +36,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      *
      * @var array<TKey, TValue>
      */
-    protected $items;
+    protected $items = [];
 
     /**
      * The character to use as a delimiter, defaults to dot (.)

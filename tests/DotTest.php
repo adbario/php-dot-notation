@@ -59,6 +59,10 @@ class DotTest extends TestCase
         $dot = new Dot(['foo.bar' => 'baz'], true);
 
         $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+
+        $dot = new Dot([], true);
+
+        $this->assertEquals([], $dot->get());
     }
 
     public function testConstructWithCustomDelimiter(): void
