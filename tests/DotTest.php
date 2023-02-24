@@ -812,19 +812,35 @@ class DotTest extends TestCase
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
-        $this->assertEquals(
-            "Adbar\Dot::__set_state(array(\n" .
-            "   'items' => \n" .
-            "  array (\n" .
-            "    'foo' => \n" .
-            "    array (\n" .
-            "      'bar' => 'baz',\n" .
-            "    ),\n" .
-            "  ),\n" .
-            "   'delimiter' => '.',\n" .
-            "))",
-            var_export($dot, true)
-        );
+        if (version_compare(PHP_VERSION, '8.2.0') >= 0) {
+            $this->assertEquals(
+                "\Adbar\Dot::__set_state(array(\n" .
+                "   'items' => \n" .
+                "  array (\n" .
+                "    'foo' => \n" .
+                "    array (\n" .
+                "      'bar' => 'baz',\n" .
+                "    ),\n" .
+                "  ),\n" .
+                "   'delimiter' => '.',\n" .
+                "))",
+                var_export($dot, true)
+            );
+        } else {
+            $this->assertEquals(
+                "Adbar\Dot::__set_state(array(\n" .
+                "   'items' => \n" .
+                "  array (\n" .
+                "    'foo' => \n" .
+                "    array (\n" .
+                "      'bar' => 'baz',\n" .
+                "    ),\n" .
+                "  ),\n" .
+                "   'delimiter' => '.',\n" .
+                "))",
+                var_export($dot, true)
+            );
+        }
     }
 
     /*
