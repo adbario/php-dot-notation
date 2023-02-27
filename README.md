@@ -47,7 +47,7 @@ echo $dot['info.home.address'];
 Install the latest version using [Composer](https://getcomposer.org/):
 
 ```
-$ composer require adbario/php-dot-notation
+composer require adbario/php-dot-notation
 ```
 
 ## Usage
