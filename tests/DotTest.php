@@ -32,14 +32,14 @@ class DotTest extends TestCase
     {
         $dot = new Dot(['foo' => 'bar']);
 
-        $this->assertEquals('bar', $dot->get('foo'));
+        $this->assertSame('bar', $dot->get('foo'));
     }
 
     public function testConstructWithString(): void
     {
         $dot = new Dot('foobar');
 
-        $this->assertEquals('foobar', $dot->get(0));
+        $this->assertSame('foobar', $dot->get(0));
     }
 
     public function testConstructWithDot(): void
@@ -47,33 +47,33 @@ class DotTest extends TestCase
         $dot1 = new Dot(['foo' => 'bar']);
         $dot2 = new Dot($dot1);
 
-        $this->assertEquals('bar', $dot2->get('foo'));
+        $this->assertSame('bar', $dot2->get('foo'));
     }
 
     public function testConstructWithParsing(): void
     {
         $dot = new Dot(['foo.bar' => 'baz']);
 
-        $this->assertEquals(['foo.bar' => 'baz'], $dot->get());
+        $this->assertSame(['foo.bar' => 'baz'], $dot->get());
 
         $dot = new Dot(['foo.bar' => 'baz'], true);
 
-        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+        $this->assertSame(['foo' => ['bar' => 'baz']], $dot->get());
 
         $dot = new Dot([], true);
 
-        $this->assertEquals([], $dot->get());
+        $this->assertSame([], $dot->get());
     }
 
     public function testConstructWithCustomDelimiter(): void
     {
         $dot = new Dot(['foo_bar' => 'baz'], false, "_");
 
-        $this->assertEquals(['foo_bar' => 'baz'], $dot->get());
+        $this->assertSame(['foo_bar' => 'baz'], $dot->get());
 
         $dot = new Dot(['foo_bar' => 'baz'], true, "_");
 
-        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+        $this->assertSame(['foo' => ['bar' => 'baz']], $dot->get());
     }
 
     public function testConstructHelper(): void
@@ -81,25 +81,25 @@ class DotTest extends TestCase
         $dot = dot(['foo' => 'bar']);
 
         $this->assertInstanceOf(Dot::class, $dot);
-        $this->assertEquals('bar', $dot->get('foo'));
+        $this->assertSame('bar', $dot->get('foo'));
     }
 
     public function testConstructHelpertWithParsing(): void
     {
         $dot = dot(['foo.bar' => 'baz'], true);
 
-        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+        $this->assertSame(['foo' => ['bar' => 'baz']], $dot->get());
     }
 
     public function testConstructHelpertWithCustomDelimiter(): void
     {
         $dot = dot(['foo_bar' => 'baz'], false, "_");
 
-        $this->assertEquals(['foo_bar' => 'baz'], $dot->get());
+        $this->assertSame(['foo_bar' => 'baz'], $dot->get());
 
         $dot = dot(['foo_bar' => 'baz'], true, "_");
 
-        $this->assertEquals(['foo' => ['bar' => 'baz']], $dot->get());
+        $this->assertSame(['foo' => ['bar' => 'baz']], $dot->get());
     }
 
     /*
@@ -113,7 +113,7 @@ class DotTest extends TestCase
         $dot = new Dot();
         $dot->add('foo.bar', 'baz');
 
-        $this->assertEquals('baz', $dot->get('foo.bar'));
+        $this->assertSame('baz', $dot->get('foo.bar'));
     }
 
     public function testAddValueToExistingKey(): void
@@ -121,7 +121,7 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => 'bar']);
         $dot->add('foo', 'baz');
 
-        $this->assertEquals('bar', $dot->get('foo'));
+        $this->assertSame('bar', $dot->get('foo'));
     }
 
     public function testAddArrayOfKeyValuePairs(): void
@@ -246,16 +246,16 @@ class DotTest extends TestCase
     {
         $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
         $flatten = $dot->flatten();
-        $this->assertEquals('xyz', $flatten['foo.abc']);
-        $this->assertEquals('baz', $flatten['foo.bar.0']);
+        $this->assertSame('xyz', $flatten['foo.abc']);
+        $this->assertSame('baz', $flatten['foo.bar.0']);
     }
 
     public function testFlattenWithCustomDelimiter(): void
     {
         $dot = new Dot(['foo' => ['abc' => 'xyz', 'bar' => ['baz']]]);
         $flatten = $dot->flatten('_');
-        $this->assertEquals('xyz', $flatten['foo_abc']);
-        $this->assertEquals('baz', $flatten['foo_bar_0']);
+        $this->assertSame('xyz', $flatten['foo_abc']);
+        $this->assertSame('baz', $flatten['foo_bar_0']);
     }
 
     /*
@@ -268,7 +268,7 @@ class DotTest extends TestCase
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
-        $this->assertEquals('baz', $dot->get('foo.bar'));
+        $this->assertSame('baz', $dot->get('foo.bar'));
     }
 
     public function testGetValueFromNonExistingKey(): void
@@ -282,7 +282,7 @@ class DotTest extends TestCase
     {
         $dot = new Dot();
 
-        $this->assertEquals('bar', $dot->get('foo', 'bar'));
+        $this->assertSame('bar', $dot->get('foo', 'bar'));
     }
 
     /*
@@ -370,7 +370,7 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->merge(['foo' => ['bar' => 'qux']]);
 
-        $this->assertEquals('qux', $dot->get('foo.bar'));
+        $this->assertSame('qux', $dot->get('foo.bar'));
     }
 
     public function testMergeArrayWithKey(): void
@@ -378,7 +378,7 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->merge('foo', ['bar' => 'qux']);
 
-        $this->assertEquals('qux', $dot->get('foo.bar'));
+        $this->assertSame('qux', $dot->get('foo.bar'));
     }
 
     public function testMergeDotWithDot(): void
@@ -387,7 +387,7 @@ class DotTest extends TestCase
         $dot2 = new Dot(['foo' => ['bar' => 'qux']]);
         $dot1->merge($dot2);
 
-        $this->assertEquals('qux', $dot1->get('foo.bar'));
+        $this->assertSame('qux', $dot1->get('foo.bar'));
     }
 
     public function testMergeDotObjectWithKey(): void
@@ -396,7 +396,7 @@ class DotTest extends TestCase
         $dot2 = new Dot(['bar' => 'qux']);
         $dot1->merge('foo', $dot2);
 
-        $this->assertEquals('qux', $dot1->get('foo.bar'));
+        $this->assertSame('qux', $dot1->get('foo.bar'));
     }
 
     public function testMergeReturnsDot(): void
@@ -417,8 +417,8 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursive(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
 
-        $this->assertEquals(['baz', 'qux'], $dot->get('foo.bar'));
-        $this->assertEquals('quuz', $dot->get('foo.quux'));
+        $this->assertSame(['baz', 'qux'], $dot->get('foo.bar'));
+        $this->assertSame('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveMergeArrayWithKey(): void
@@ -426,8 +426,8 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursive('foo', ['bar' => 'qux', 'quux' => 'quuz']);
 
-        $this->assertEquals(['baz', 'qux'], $dot->get('foo.bar'));
-        $this->assertEquals('quuz', $dot->get('foo.quux'));
+        $this->assertSame(['baz', 'qux'], $dot->get('foo.bar'));
+        $this->assertSame('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveMergeDotWithDot(): void
@@ -436,8 +436,8 @@ class DotTest extends TestCase
         $dot2 = new Dot(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
         $dot1->mergeRecursive($dot2);
 
-        $this->assertEquals(['baz', 'qux'], $dot1->get('foo.bar'));
-        $this->assertEquals('quuz', $dot1->get('foo.quux'));
+        $this->assertSame(['baz', 'qux'], $dot1->get('foo.bar'));
+        $this->assertSame('quuz', $dot1->get('foo.quux'));
     }
 
     public function testRecursiveMergeDotObjectWithKey(): void
@@ -446,8 +446,8 @@ class DotTest extends TestCase
         $dot2 = new Dot(['bar' => 'qux', 'quux' => 'quuz']);
         $dot1->mergeRecursive('foo', $dot2);
 
-        $this->assertEquals(['baz', 'qux'], $dot1->get('foo.bar'));
-        $this->assertEquals('quuz', $dot1->get('foo.quux'));
+        $this->assertSame(['baz', 'qux'], $dot1->get('foo.bar'));
+        $this->assertSame('quuz', $dot1->get('foo.quux'));
     }
 
     public function testRecursiveMergeReturnsDot(): void
@@ -471,8 +471,8 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursiveDistinct(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
 
-        $this->assertEquals('qux', $dot->get('foo.bar'));
-        $this->assertEquals('quuz', $dot->get('foo.quux'));
+        $this->assertSame('qux', $dot->get('foo.bar'));
+        $this->assertSame('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveDistinctMergeArrayWithKey(): void
@@ -480,8 +480,8 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->mergeRecursiveDistinct('foo', ['bar' => 'qux', 'quux' => 'quuz']);
 
-        $this->assertEquals('qux', $dot->get('foo.bar'));
-        $this->assertEquals('quuz', $dot->get('foo.quux'));
+        $this->assertSame('qux', $dot->get('foo.bar'));
+        $this->assertSame('quuz', $dot->get('foo.quux'));
     }
 
     public function testRecursiveDistinctMergeDotWithDot(): void
@@ -490,8 +490,8 @@ class DotTest extends TestCase
         $dot2 = new Dot(['foo' => ['bar' => 'qux', 'quux' => 'quuz']]);
         $dot1->mergeRecursiveDistinct($dot2);
 
-        $this->assertEquals('qux', $dot1->get('foo.bar'));
-        $this->assertEquals('quuz', $dot1->get('foo.quux'));
+        $this->assertSame('qux', $dot1->get('foo.bar'));
+        $this->assertSame('quuz', $dot1->get('foo.quux'));
     }
 
     public function testRecursiveDistinctMergeDotObjectWithKey(): void
@@ -500,8 +500,8 @@ class DotTest extends TestCase
         $dot2 = new Dot(['bar' => 'qux', 'quux' => 'quuz']);
         $dot1->mergeRecursiveDistinct('foo', $dot2);
 
-        $this->assertEquals('qux', $dot1->get('foo.bar'));
-        $this->assertEquals('quuz', $dot1->get('foo.quux'));
+        $this->assertSame('qux', $dot1->get('foo.bar'));
+        $this->assertSame('quuz', $dot1->get('foo.quux'));
     }
 
     public function testRecursivDistincteMergeReturnsDot(): void
@@ -524,7 +524,7 @@ class DotTest extends TestCase
     {
         $dot = new Dot(['foo' => 'bar']);
 
-        $this->assertEquals('bar', $dot->pull('foo'));
+        $this->assertSame('bar', $dot->pull('foo'));
         $this->assertFalse($dot->has('foo'));
     }
 
@@ -539,7 +539,7 @@ class DotTest extends TestCase
     {
         $dot = new Dot();
 
-        $this->assertEquals('bar', $dot->pull('foo', 'bar'));
+        $this->assertSame('bar', $dot->pull('foo', 'bar'));
     }
 
     public function testPullAll(): void
@@ -561,7 +561,7 @@ class DotTest extends TestCase
         $dot = new Dot();
         $dot->push('foo');
 
-        $this->assertEquals('foo', $dot->get(0));
+        $this->assertSame('foo', $dot->get(0));
     }
 
     public function testPushValueToKey(): void
@@ -590,7 +590,7 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
         $dot->replace(['foo' => ['qux' => 'quux']]);
 
-        $this->assertEquals(['qux' => 'quux'], $dot->get('foo'));
+        $this->assertSame(['qux' => 'quux'], $dot->get('foo'));
     }
 
     public function testReplaceKeyWithArray(): void
@@ -598,7 +598,7 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz', 'qux' => 'quux']]);
         $dot->replace('foo', ['qux' => 'corge']);
 
-        $this->assertEquals(['bar' => 'baz', 'qux' => 'corge'], $dot->get('foo'));
+        $this->assertSame(['bar' => 'baz', 'qux' => 'corge'], $dot->get('foo'));
     }
 
     public function testReplaceWithDot(): void
@@ -607,7 +607,7 @@ class DotTest extends TestCase
         $dot2 = new Dot(['foo' => ['bar' => 'qux']]);
         $dot1->replace($dot2);
 
-        $this->assertEquals(['bar' => 'qux'], $dot1->get('foo'));
+        $this->assertSame(['bar' => 'qux'], $dot1->get('foo'));
     }
 
     public function testReplaceKeyWithDot(): void
@@ -616,7 +616,7 @@ class DotTest extends TestCase
         $dot2 = new Dot(['qux' => 'corge']);
         $dot1->merge('foo', $dot2);
 
-        $this->assertEquals(['bar' => 'baz', 'qux' => 'corge'], $dot1->get('foo'));
+        $this->assertSame(['bar' => 'baz', 'qux' => 'corge'], $dot1->get('foo'));
     }
 
     public function testReplaceReturnsDot(): void
@@ -637,7 +637,7 @@ class DotTest extends TestCase
         $dot = new Dot();
         $dot->set('foo.bar', 'baz');
 
-        $this->assertEquals('baz', $dot->get('foo.bar'));
+        $this->assertSame('baz', $dot->get('foo.bar'));
     }
 
     public function testSetArrayOfKeyValuePairs(): void
@@ -689,7 +689,7 @@ class DotTest extends TestCase
         $dot->setReference($items);
         $dot->set('foo', 'baz');
 
-        $this->assertEquals('baz', $items['foo']);
+        $this->assertSame('baz', $items['foo']);
     }
 
     public function testSetReferenceReturnsDot(): void
@@ -721,7 +721,7 @@ class DotTest extends TestCase
     {
         $dot = new Dot(['foo' => 'bar']);
 
-        $this->assertEquals('bar', $dot['foo']);
+        $this->assertSame('bar', $dot['foo']);
     }
 
     public function testOffsetSet(): void
@@ -729,7 +729,7 @@ class DotTest extends TestCase
         $dot = new Dot();
         $dot['foo.bar'] = 'baz';
 
-        $this->assertEquals('baz', $dot['foo.bar']);
+        $this->assertSame('baz', $dot['foo.bar']);
     }
 
     public function testOffsetSetWithoutKey(): void
@@ -737,7 +737,7 @@ class DotTest extends TestCase
         $dot = new Dot();
         $dot[] = 'foobar';
 
-        $this->assertEquals('foobar', $dot->get(0));
+        $this->assertSame('foobar', $dot->get(0));
     }
 
     public function testOffsetUnset(): void
@@ -788,7 +788,7 @@ class DotTest extends TestCase
     {
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
-        $this->assertEquals(
+        $this->assertSame(
             json_encode(['bar' => 'baz'], JSON_HEX_APOS),
             (string) $dot->toJson('foo', JSON_HEX_APOS)
         );
@@ -813,7 +813,7 @@ class DotTest extends TestCase
         $dot = new Dot(['foo' => ['bar' => 'baz']]);
 
         if (version_compare(PHP_VERSION, '8.2.0') >= 0) {
-            $this->assertEquals(
+            $this->assertSame(
                 "\Adbar\Dot::__set_state(array(\n" .
                 "   'items' => \n" .
                 "  array (\n" .
@@ -827,7 +827,7 @@ class DotTest extends TestCase
                 var_export($dot, true)
             );
         } else {
-            $this->assertEquals(
+            $this->assertSame(
                 "Adbar\Dot::__set_state(array(\n" .
                 "   'items' => \n" .
                 "  array (\n" .
@@ -853,7 +853,7 @@ class DotTest extends TestCase
     {
         $dot = new Dot([1, 2, 3]);
 
-        $this->assertEquals(3, $dot->count());
+        $this->assertSame(3, $dot->count());
     }
 
     public function testCountable(): void
