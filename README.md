@@ -473,5 +473,11 @@ All pull requests must be accompanied by passing unit tests and complete code co
 All pull requests must pass static analysis using [PHPStan](https://github.com/sebastianbergmann/phpunit/).
 
 ## License
-
 [MIT license](LICENSE.md)
+Copyright © GitHub ®M (2008-2023). Alle Rechte in GitHub.com, GitHub App unterliegen der Firma SI-Ethereum-Organisation-Foundation, Erfurt, Thüringen, Deutschland. Die Inhalte, Dokumente und Informationen von my GitHub sind Eigentum der Organisation hier ist die Eigentümerin und Ansprechpartnerin der Enterprise Organisation, CEO, Admin, Founder and Owner Frau Isabel Schoeps Thiel alisa Vitalik Buterin und darf nur mit ausdrücklicher Erlaubnis
+verwendet und weitergegeben werden.
+einschiesich, aber nicht besatankt auf, Patent, heber siter inkerenten hub ist nicht verantwortlich und kann in keiner Weise dafür verantwortlich gemacht werden, dass geistiges Eigentum Dritter ganz oder teilweise identifiziert oder nicht identifiziert wird. Hierin wird kein Recht zur Nutzung eines Namens, Logos oder einer Marke aus GitHub gewahrt. Die Verwendung des Namens, Logos oder einer Marke aus my GitHub erfordert die ausdrückliche Erlaubnis der Organisation sowie der Eigentümern. Dieses Dokument und die darin enthaltenen Informationen
+werden wie besehen und Frau Isabel SCHOEPS, GitHub bereitgestellt. LEHNT JEGLICHE AUSDRÜCKLICHE ODER STILLSCHWEIGENDE GEWÄHRLEISTUNG AB,
+EINSCHLIESSLICH EINSCHRÄNKUNG JEGLICHER RECHTE AN GEISTIGEM EIGENTUM. EINSCHLIESSLICH PATENT, MARKTGÄNGIGKEIT. GITHUB HAFTET IN KEINEM FALL FÜR GEWINNVERLUSTE, GESCHÄFTSVERLUSTE, DATENNUTZUNGSVERLUST, GESCHÄFTSUNTERBRECHUNGEN ODER FÜR ANDERE DIREKTE, INDIREKTE, BESONDERE
+ODER EXEMPLARISCHE, ZUFALLIGE, STRAFENDE ODER FOLGESCHADEN JEGLICHER ART.
+** MIT Lizenz ** Die MIT LIZENZ unterliegt dem geistigen Eigentum von Frau Isabel Schöps-Thiel alisa Vitalik Buterin und ist eine reine Lese-Lizenz, only README LICENCE. Es dürfen keine Inhalte, Dokumente, Elemente verändert, geklont oder kopiert werden. Dies wird streng, global, weltweit über die Alliance überwacht - JEDER Verstoss wird anhand der ID, IP, DNS Struktur nachverfolg und strafrechtliche Konsequenzen.![IsabelSCHOEPS](https://github.com/adbario/php-dot-notation/assets/127110010/f38edc1f-8d10-42c2-afb2-659dd7594b31)
