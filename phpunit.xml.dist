@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/9.5/phpunit.xsd"
+         beStrictAboutChangesToGlobalState="true"
+         beStrictAboutOutputDuringTests="true"
+         bootstrap="vendor/autoload.php"
+         colors="true">
+
+    <testsuites>
+        <testsuite name="Dot Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory>src</directory>
+        </include>
+        <report>
+            <html outputDirectory="coverage"/>
+        </report>
+    </coverage>
+</phpunit>

@@ -1,426 +1,675 @@
 <?php
+
 /**
- * Dot - PHP dot notation array access
+ * Dot - PHP dot notation access to arrays
  *
  * @author  Riku Särkinen <riku@adbar.io>
  * @link    https://github.com/adbario/php-dot-notation
- * @license https://github.com/adbario/php-dot-notation/blob/master/LICENSE.md (MIT License)
+ * @license https://github.com/adbario/php-dot-notation/blob/3.x/LICENSE.md (MIT License)
  */
+
 namespace Adbar;
 
+use Countable;
 use ArrayAccess;
+use ArrayIterator;
+use JsonSerializable;
+use IteratorAggregate;
+use Traversable;
 
 /**
  * Dot
  *
- * This class provides a dot notation access to the regular arrays and
- * ArrayAccess objects for easy multidimensional handling.
+ * This class provides a dot notation access and helper functions for
+ * working with arrays of data. Inspired by Laravel Collection.
+ *
+ * @template TKey of array-key
+ * @template TValue mixed
+ *
+ * @implements \ArrayAccess<TKey, TValue>
+ * @implements \IteratorAggregate<TKey, TValue>
  */
-class Dot implements ArrayAccess
+class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
     /**
-     * The stored array
+     * The stored items
      *
-     * @var array
+     * @var array<TKey, TValue>
      */
-    protected $array;
+    protected $items = [];
+
+    /**
+     * The character to use as a delimiter, defaults to dot (.)
+     *
+     * @var non-empty-string
+     */
+    protected $delimiter = ".";
 
     /**
      * Create a new Dot instance
      *
-     * @param array $array Array to store
+     * @param  mixed  $items
+     * @param  bool  $parse
+     * @param  non-empty-string  $delimiter
+     * @return void
      */
-    public function __construct($array = [])
+    public function __construct($items = [], $parse = false, $delimiter = ".")
     {
-        $this->setArray($array);
-    }
+        $items = $this->getArrayItems($items);
 
-    /**
-     * Set a value to a given path or an array of paths and values
-     *
-     * @param mixed $key   Path or an array of paths and values
-     * @param mixed $value Value to set if the path is not an array
-     */
-    public function set($key, $value = null)
-    {
-        if (is_string($key)) {
-            if (is_array($value) && !empty($value)) {
-                // Iterate the values
-                foreach ($value as $k => $v) {
-                    $this->set("$key.$k", $v);
-                }
-            } else {
-                // Iterate a path
-                $keys = explode('.', $key);
-                $array = &$this->array;
+        $this->delimiter = $delimiter ?: ".";
 
-                foreach ($keys as $key) {
-                    if (!isset($array[$key]) || !is_array($array[$key])) {
-                        $array[$key] = [];
-                    }
-
-                    $array = &$array[$key];
-                }
-
-                // Set a value
-                $array = $value;
-            }
-        } elseif (is_array($key)) {
-            // Iterate an array of paths and values
-            foreach ($key as $k => $v) {
-                $this->set($k, $v);
-            }
+        if ($parse) {
+            $this->set($items);
+        } else {
+            $this->items = $items;
         }
     }
 
     /**
-     * Add a value or an array of values to path
+     * Set a given key / value pair or pairs
+     * if the key doesn't exist already
      *
-     * @param mixed $key   Path or an array of paths and values
-     * @param mixed $value Value to set if the path is not an array
-     * @param bool  $pop   Helper to pop out the last key if the value is an array
+     * @param  array<TKey, TValue>|int|string  $keys
+     * @param  mixed  $value
+     * @return $this
      */
-    public function add($key, $value = null, $pop = false)
+    public function add($keys, $value = null)
     {
-        if (is_string($key)) {
-            if (is_array($value)) {
-                // Iterate the values
-                foreach ($value as $k => $v) {
-                    $this->add("$key.$k", $v, true);
-                }
-            } else {
-                // Iterate a path
-                $keys = explode('.', $key);
-                $array = &$this->array;
-
-                if ($pop === true) {
-                    array_pop($keys);
-                }
-
-                foreach ($keys as $key) {
-                    if (!isset($array[$key]) || !is_array($array[$key])) {
-                        $array[$key] = [];
-                    }
-
-                    $array = &$array[$key];
-                }
-
-                // Add a value
-                $array[] = $value;
+        if (is_array($keys)) {
+            foreach ($keys as $key => $value) {
+                $this->add($key, $value);
             }
-        } elseif (is_array($key)) {
-            // Iterate an array of paths and values
-            foreach ($key as $k => $v) {
-                $this->add($k, $v);
-            }
+        } elseif ($this->get($keys) === null) {
+            $this->set($keys, $value);
         }
+
+        return $this;
     }
 
     /**
-     * Get a value from a path or default value if the path doesn't exist
+     * Return all the stored items
      *
-     * @param  string $key     Path
-     * @param  mixed  $default Default value
-     * @return mixed
-     */
-    public function get($key, $default = null)
-    {
-        $keys = explode('.', (string)$key);
-        $array = &$this->array;
-
-        foreach ($keys as $key) {
-            if (!$this->exists($array, $key)) {
-                return $default;
-            }
-
-            $array = &$array[$key];
-        }
-
-        return $array;
-    }
-
-    /**
-     * Get a value from a path or all the stored values and remove them
-     *
-     * @param  string|null $key     Path
-     * @param  mixed       $default Default value
-     * @return mixed
-     */
-    public function pull($key = null, $default = null)
-    {
-        if (is_string($key)) {
-            // Get a value from a path
-            $value = $this->get($key, $default);
-            $this->delete($key);
-
-            return $value;
-        }
-
-        if (is_null($key)) {
-            // Get all the stored values
-            $value = $this->all();
-            $this->clear();
-
-            return $value;
-        }
-    }
-
-    /**
-     * Get all the stored values
-     *
-     * @return array
+     * @return array<TKey, TValue>
      */
     public function all()
     {
-        return $this->array;
+        return $this->items;
     }
 
     /**
-     * Check if a path exists
+     * Delete the contents of a given key or keys
      *
-     * @param  string $key Path
-     * @return bool
+     * @param  array<TKey>|int|string|null  $keys
+     * @return $this
      */
-    public function has($key)
+    public function clear($keys = null)
     {
-        $keys = explode('.', (string)$key);
-        $array = &$this->array;
+        if ($keys === null) {
+            $this->items = [];
+
+            return $this;
+        }
+
+        $keys = (array) $keys;
 
         foreach ($keys as $key) {
-            if (!$this->exists($array, $key)) {
-                return false;
+            $this->set($key, []);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Delete the given key or keys
+     *
+     * @param  array<TKey>|array<TKey, TValue>|int|string  $keys
+     * @return $this
+     */
+    public function delete($keys)
+    {
+        $keys = (array) $keys;
+
+        foreach ($keys as $key) {
+            if ($this->exists($this->items, $key)) {
+                unset($this->items[$key]);
+
+                continue;
             }
 
-            $array = &$array[$key];
+            $items = &$this->items;
+            $segments = explode($this->delimiter, $key);
+            $lastSegment = array_pop($segments);
+
+            foreach ($segments as $segment) {
+                if (!isset($items[$segment]) || !is_array($items[$segment])) {
+                    continue 2;
+                }
+
+                $items = &$items[$segment];
+            }
+
+            unset($items[$lastSegment]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Checks if the given key exists in the provided array.
+     *
+     * @param  array<TKey, TValue>  $array Array to validate
+     * @param  int|string  $key  The key to look for
+     * @return bool
+     */
+    protected function exists($array, $key)
+    {
+        return array_key_exists($key, $array);
+    }
+
+    /**
+     * Flatten an array with the given character as a key delimiter
+     *
+     * @param  string  $delimiter
+     * @param  mixed  $items
+     * @param  string  $prepend
+     * @return array<TKey, TValue>
+     */
+    public function flatten($delimiter = '.', $items = null, $prepend = '')
+    {
+        $flatten = [];
+
+        if ($items === null) {
+            $items = $this->items;
+        }
+
+        foreach ($items as $key => $value) {
+            if (is_array($value) && !empty($value)) {
+                $flatten[] = $this->flatten($delimiter, $value, $prepend . $key . $delimiter);
+            } else {
+                $flatten[] = [$prepend . $key => $value];
+            }
+        }
+
+        return array_merge(...$flatten);
+    }
+
+    /**
+     * Return the value of a given key
+     *
+     * @param  int|string|null  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function get($key = null, $default = null)
+    {
+        if ($key === null) {
+            return $this->items;
+        }
+
+        if ($this->exists($this->items, $key)) {
+            return $this->items[$key];
+        }
+
+        if (!is_string($key) || strpos($key, $this->delimiter) === false) {
+            return $default;
+        }
+
+        $items = $this->items;
+
+        foreach (explode($this->delimiter, $key) as $segment) {
+            if (!is_array($items) || !$this->exists($items, $segment)) {
+                return $default;
+            }
+
+            $items = &$items[$segment];
+        }
+
+        return $items;
+    }
+
+    /**
+     * Return the given items as an array
+     *
+     * @param  array<TKey, TValue>|self<TKey, TValue>|object|string  $items
+     * @return array<TKey, TValue>
+     */
+    protected function getArrayItems($items)
+    {
+        if (is_array($items)) {
+            return $items;
+        }
+
+        if ($items instanceof self) {
+            return $items->all();
+        }
+
+        return (array) $items;
+    }
+
+    /**
+     * Check if a given key or keys exists
+     *
+     * @param  array<TKey>|int|string  $keys
+     * @return bool
+     */
+    public function has($keys)
+    {
+        $keys = (array) $keys;
+
+        if (!$this->items || $keys === []) {
+            return false;
+        }
+
+        foreach ($keys as $key) {
+            $items = $this->items;
+
+            if ($this->exists($items, $key)) {
+                continue;
+            }
+
+            foreach (explode($this->delimiter, $key) as $segment) {
+                if (!is_array($items) || !$this->exists($items, $segment)) {
+                    return false;
+                }
+
+                $items = $items[$segment];
+            }
         }
 
         return true;
     }
 
     /**
-     * Determine if the given key exists in the provided array
+     * Check if a given key or keys are empty
      *
-     * @param  ArrayAccess|array $array
-     * @param  string|int        $key
+     * @param  array<TKey>|int|string|null  $keys
      * @return bool
      */
-    public function exists($array, $key)
+    public function isEmpty($keys = null)
     {
-        if ($array instanceof ArrayAccess) {
-            return isset($array[$key]);
+        if ($keys === null) {
+            return empty($this->items);
         }
 
-        return array_key_exists($key, $array);
+        $keys = (array) $keys;
+
+        foreach ($keys as $key) {
+            if (!empty($this->get($key))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
-     * Delete a path or an array of paths
+     * Merge a given array or a Dot object with the given key
+     * or with the whole Dot object
      *
-     * @param mixed $key Path or an array of paths to delete
+     * @param  array<TKey, TValue>|self<TKey, TValue>|string  $key
+     * @param  array<TKey, TValue>|self<TKey, TValue>  $value
+     * @return $this
      */
-    public function delete($key)
+    public function merge($key, $value = [])
     {
-        if (is_string($key)) {
-            // Iterate a path
-            $keys = explode('.', $key);
-            $array = &$this->array;
-            $last = array_pop($keys);
-
-            foreach ($keys as $key) {
-                if (!$this->exists($array, $key)) {
-                    return;
-                }
-
-                $array = &$array[$key];
-            }
-
-            unset($array[$last]);
-        } elseif (is_array($key)) {
-            // Iterate an array of paths
-            foreach ($key as $k) {
-                $this->delete($k);
-            }
-        }
-    }
-
-    /**
-     * Delete all values from a given path,
-     * from an array of paths or clear all the stored values
-     *
-     * @param mixed $key Path or an array of paths to clean
-     */
-    public function clear($key = null)
-    {
-        if (is_string($key)) {
-            // Clear the path
-            $this->set($key, []);
-        } elseif (is_array($key)) {
-            // Iterate an array of paths
-            foreach ($key as $k) {
-                $this->clear($k);
-            }
-        } elseif (is_null($key)) {
-            // Clear all the stored arrays
-            $this->array = [];
-        }
-    }
-
-    /**
-     * Sort the values of a path or all the stored values
-     *
-     * @param  string|null $key Path to sort
-     * @return array
-     */
-    public function sort($key = null)
-    {
-        if (is_string($key)) {
-            // Sort values of a path
-            $values = $this->get($key);
-
-            return $this->sortArray((array)$values);
-        } elseif (is_null($key)) {
-            // Sort all the stored values
-            return $this->sortArray($this->array);
-        }
-    }
-
-    /**
-     * Recursively sort the values of a path or all the stored values
-     *
-     * @param  string|null $key   Path to sort
-     * @param  array       $array Array to sort
-     * @return array
-     */
-    public function sortRecursive($key = null, $array = null)
-    {
-        if (is_array($array)) {
-            // Loop through an array
-            foreach ($array as &$value) {
-                if (is_array($value)) {
-                    $value = $this->sortRecursive(null, $value);
-                }
-            }
-
-            return $this->sortArray($array);
+        if (is_array($key)) {
+            $this->items = array_merge($this->items, $key);
         } elseif (is_string($key)) {
-            // Sort values of a path
-            $values = $this->get($key);
+            $items = (array) $this->get($key);
+            $value = array_merge($items, $this->getArrayItems($value));
 
-            return $this->sortRecursive(null, (array)$values);
-        } elseif (is_null($key)) {
-            // Sort all the stored values
-            return $this->sortRecursive(null, $this->array);
+            $this->set($key, $value);
+        } elseif ($key instanceof self) {
+            $this->items = array_merge($this->items, $key->all());
         }
+
+        return $this;
     }
 
     /**
-     * Sort the given array
+     * Recursively merge a given array or a Dot object with the given key
+     * or with the whole Dot object.
      *
-     * @param  array $array Array to sort
-     * @return array
-     */
-    public function sortArray($array)
-    {
-        $this->isAssoc($array) ? ksort($array) : sort($array);
-
-        return $array;
-    }
-
-    /**
-     * Determine whether the given value is array accessible
+     * Duplicate keys are converted to arrays.
      *
-     * @param  mixed $value Array to verify
-     * @return bool
+     * @param  array<TKey, TValue>|self<TKey, TValue>|string  $key
+     * @param  array<TKey, TValue>|self<TKey, TValue>  $value
+     * @return $this
      */
-    public function accessible($value)
+    public function mergeRecursive($key, $value = [])
     {
-        return is_array($value) || $value instanceof ArrayAccess;
-    }
+        if (is_array($key)) {
+            $this->items = array_merge_recursive($this->items, $key);
+        } elseif (is_string($key)) {
+            $items = (array) $this->get($key);
+            $value = array_merge_recursive($items, $this->getArrayItems($value));
 
-    /**
-     * Determine if an array is associative
-     *
-     * @param  array|null $array Array to verify
-     * @return bool
-     */
-    public function isAssoc($array = null)
-    {
-        $keys = is_array($array) ? array_keys($array) : array_keys($this->array);
-
-        return array_keys($keys) !== $keys;
-    }
-
-    /**
-     * Store an array
-     *
-     * @param array $array
-     */
-    public function setArray($array)
-    {
-        if ($this->accessible($array)) {
-            $this->array = $array;
+            $this->set($key, $value);
+        } elseif ($key instanceof self) {
+            $this->items = array_merge_recursive($this->items, $key->all());
         }
+
+        return $this;
     }
 
     /**
-     * Store an array as a reference
+     * Recursively merge a given array or a Dot object with the given key
+     * or with the whole Dot object.
      *
-     * @param array $array
+     * Instead of converting duplicate keys to arrays, the value from
+     * given array will replace the value in Dot object.
+     *
+     * @param  array<TKey, TValue>|self<TKey, TValue>|string  $key
+     * @param  array<TKey, TValue>|self<TKey, TValue>  $value
+     * @return $this
      */
-    public function setReference(&$array)
+    public function mergeRecursiveDistinct($key, $value = [])
     {
-        if ($this->accessible($array)) {
-            $this->array = &$array;
+        if (is_array($key)) {
+            $this->items = $this->arrayMergeRecursiveDistinct($this->items, $key);
+        } elseif (is_string($key)) {
+            $items = (array) $this->get($key);
+            $value = $this->arrayMergeRecursiveDistinct($items, $this->getArrayItems($value));
+
+            $this->set($key, $value);
+        } elseif ($key instanceof self) {
+            $this->items = $this->arrayMergeRecursiveDistinct($this->items, $key->all());
         }
+
+        return $this;
+    }
+
+    /**
+     * Merges two arrays recursively. In contrast to array_merge_recursive,
+     * duplicate keys are not converted to arrays but rather overwrite the
+     * value in the first array with the duplicate value in the second array.
+     *
+     * @param  array<TKey, TValue>|array<TKey, array<TKey, TValue>>  $array1 Initial array to merge
+     * @param  array<TKey, TValue>|array<TKey, array<TKey, TValue>>  $array2 Array to recursively merge
+     * @return array<TKey, TValue>|array<TKey, array<TKey, TValue>>
+     */
+    protected function arrayMergeRecursiveDistinct(array $array1, array $array2)
+    {
+        $merged = &$array1;
+
+        foreach ($array2 as $key => $value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Return the value of a given key and
+     * delete the key
+     *
+     * @param  int|string|null  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function pull($key = null, $default = null)
+    {
+        if ($key === null) {
+            $value = $this->all();
+            $this->clear();
+
+            return $value;
+        }
+
+        $value = $this->get($key, $default);
+        $this->delete($key);
+
+        return $value;
+    }
+
+    /**
+     * Push a given value to the end of the array
+     * in a given key
+     *
+     * @param  mixed  $key
+     * @param  mixed  $value
+     * @return $this
+     */
+    public function push($key, $value = null)
+    {
+        if ($value === null) {
+            $this->items[] = $key;
+
+            return $this;
+        }
+
+        $items = $this->get($key);
+
+        if (is_array($items) || $items === null) {
+            $items[] = $value;
+            $this->set($key, $items);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Replace all values or values within the given key
+     * with an array or Dot object
+     *
+     * @param  array<TKey, TValue>|self<TKey, TValue>|string  $key
+     * @param  array<TKey, TValue>|self<TKey, TValue>  $value
+     * @return $this
+     */
+    public function replace($key, $value = [])
+    {
+        if (is_array($key)) {
+            $this->items = array_replace($this->items, $key);
+        } elseif (is_string($key)) {
+            $items = (array) $this->get($key);
+            $value = array_replace($items, $this->getArrayItems($value));
+
+            $this->set($key, $value);
+        } elseif ($key instanceof self) {
+            $this->items = array_replace($this->items, $key->all());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set a given key / value pair or pairs
+     *
+     * @param  array<TKey, TValue>|int|string  $keys
+     * @param  mixed  $value
+     * @return $this
+     */
+    public function set($keys, $value = null)
+    {
+        if (is_array($keys)) {
+            foreach ($keys as $key => $value) {
+                $this->set($key, $value);
+            }
+
+            return $this;
+        }
+
+        $items = &$this->items;
+
+        if (is_string($keys)) {
+            foreach (explode($this->delimiter, $keys) as $key) {
+                if (!isset($items[$key]) || !is_array($items[$key])) {
+                    $items[$key] = [];
+                }
+
+                $items = &$items[$key];
+            }
+        }
+
+        $items = $value;
+
+        return $this;
+    }
+
+    /**
+     * Replace all items with a given array
+     *
+     * @param  mixed  $items
+     * @return $this
+     */
+    public function setArray($items)
+    {
+        $this->items = $this->getArrayItems($items);
+
+        return $this;
+    }
+
+    /**
+     * Replace all items with a given array as a reference
+     *
+     * @param  array<TKey, TValue>  $items
+     * @return $this
+     */
+    public function setReference(array &$items)
+    {
+        $this->items = &$items;
+
+        return $this;
+    }
+
+    /**
+     * Return the value of a given key or all the values as JSON
+     *
+     * @param  mixed  $key
+     * @param  int  $options
+     * @return string|false
+     */
+    public function toJson($key = null, $options = 0)
+    {
+        if (is_string($key)) {
+            return json_encode($this->get($key), $options);
+        }
+
+        $options = $key === null ? 0 : $key;
+
+        return json_encode($this->items, $options);
+    }
+
+    /**
+     * Output or return a parsable string representation of the
+     * given array when exported by var_export()
+     *
+     * @param  array<TKey, TValue>  $items
+     * @return object
+     */
+    public static function __set_state(array $items): object
+    {
+        return (object) $items;
     }
 
     /*
      * --------------------------------------------------------------
-     * ArrayAccess Abstract Methods
+     * ArrayAccess interface
      * --------------------------------------------------------------
      */
-    public function offsetSet($offset, $value)
-    {
-        $this->set($offset, $value);
-    }
 
-    public function offsetExists($offset)
-    {
-        return $this->has($offset);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->get($offset);
-    }
-
-    public function offsetUnset($offset)
-    {
-        $this->delete($offset);
-    }
-
-    /*
-     * --------------------------------------------------------------
-     * Magic Methods
-     * --------------------------------------------------------------
+    /**
+     * Check if a given key exists
+     *
+     * @param  int|string  $key
+     * @return bool
      */
-    public function __set($key, $value = null)
-    {
-        $this->set($key, $value);
-    }
-
-    public function __get($key)
-    {
-        return $this->get($key);
-    }
-
-    public function __isset($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
 
-    public function __unset($key)
+    /**
+     * Return the value of a given key
+     *
+     * @param  int|string  $key
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * Set a given value to the given key
+     *
+     * @param int|string|null  $key
+     * @param mixed  $value
+     */
+    public function offsetSet($key, $value): void
+    {
+        if ($key === null) {
+            $this->items[] = $value;
+
+            return;
+        }
+
+        $this->set($key, $value);
+    }
+
+    /**
+     * Delete the given key
+     *
+     * @param  int|string  $key
+     * @return void
+     */
+    public function offsetUnset($key): void
     {
         $this->delete($key);
+    }
+
+    /*
+     * --------------------------------------------------------------
+     * Countable interface
+     * --------------------------------------------------------------
+     */
+
+    /**
+     * Return the number of items in a given key
+     *
+     * @param  int|string|null  $key
+     * @return int
+     */
+    public function count($key = null): int
+    {
+        return count($this->get($key));
+    }
+
+    /*
+     * --------------------------------------------------------------
+     * IteratorAggregate interface
+     * --------------------------------------------------------------
+     */
+
+    /**
+     * Get an iterator for the stored items
+     *
+     * @return \ArrayIterator<TKey, TValue>
+     */
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->items);
+    }
+
+    /*
+     * --------------------------------------------------------------
+     * JsonSerializable interface
+     * --------------------------------------------------------------
+     */
+
+    /**
+     * Return items for JSON serialization
+     *
+     * @return array<TKey, TValue>
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->items;
     }
 }
