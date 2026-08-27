@@ -76,6 +76,14 @@ class DotTest extends TestCase
         $this->assertSame(['foo' => ['bar' => 'baz']], $dot->get());
     }
 
+    public function testConstructHelperWithoutValues(): void
+    {
+        $dot = dot();
+
+        $this->assertInstanceOf(Dot::class, $dot);
+        $this->assertSame([], $dot->all());
+    }
+
     public function testConstructHelper(): void
     {
         $dot = dot(['foo' => 'bar']);
@@ -572,6 +580,14 @@ class DotTest extends TestCase
         $this->assertSame(['bar', 'baz'], $dot->get('foo'));
     }
 
+    public function testPushValueToScalarKeyLeavesDotUnchanged(): void
+    {
+        $dot = new Dot(['foo' => ['bar' => 'baz']]);
+        $dot->push('foo.bar', 'qux');
+
+        $this->assertSame(['foo' => ['bar' => 'baz']], $dot->all());
+    }
+
     public function testPushReturnsDot(): void
     {
         $dot = $dot = new Dot();
@@ -614,7 +630,7 @@ class DotTest extends TestCase
     {
         $dot1 = new Dot(['foo' => ['bar' => 'baz', 'qux' => 'quux']]);
         $dot2 = new Dot(['qux' => 'corge']);
-        $dot1->merge('foo', $dot2);
+        $dot1->replace('foo', $dot2);
 
         $this->assertSame(['bar' => 'baz', 'qux' => 'corge'], $dot1->get('foo'));
     }
@@ -646,6 +662,14 @@ class DotTest extends TestCase
         $dot->set(['foo' => 'bar', 'baz' => 'qux']);
 
         $this->assertSame(['foo' => 'bar', 'baz' => 'qux'], $dot->all());
+    }
+
+    public function testSetIntegerKeyDoesNotOverwriteStore(): void
+    {
+        $dot = new Dot(['foo' => 'bar']);
+        $dot->set(5, 'baz');
+
+        $this->assertSame(['foo' => 'bar', 5 => 'baz'], $dot->all());
     }
 
     public function testSetReturnsDot(): void
@@ -853,7 +877,28 @@ class DotTest extends TestCase
     {
         $dot = new Dot([1, 2, 3]);
 
-        $this->assertSame(3, $dot->count());
+        $this->assertCount(3, $dot);
+    }
+
+    public function testCountKey(): void
+    {
+        $dot = new Dot(['foo' => [1, 2, 3]]);
+
+        $this->assertSame(3, $dot->count('foo'));
+    }
+
+    public function testCountScalarKey(): void
+    {
+        $dot = new Dot(['foo' => 'bar']);
+
+        $this->assertSame(1, $dot->count('foo'));
+    }
+
+    public function testCountNonExistingKey(): void
+    {
+        $dot = new Dot(['foo' => 'bar']);
+
+        $this->assertSame(0, $dot->count('baz'));
     }
 
     public function testCountable(): void

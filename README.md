@@ -170,7 +170,8 @@ $array = [];
 <a name="count"></a>
 ### count()
 
-Returns the number of items in a given key:
+Returns the number of items in a given key. A non-countable value counts as
+one item and a missing key counts as zero items:
 ```php
 $dot->count('user.siblings');
 ```
@@ -223,10 +224,7 @@ echo $dot->get('user.name');
 // ArrayAccess
 echo $dot['user.name'];
 
-// Equivalent vanilla PHP < 7.0
-echo isset($array['user']['name']) ? $array['user']['name'] : null;
-
-// Equivalent vanilla PHP >= 7.0
+// Equivalent vanilla PHP
 echo $array['user']['name'] ?? null;
 ```
 
@@ -342,11 +340,7 @@ Returns the value of a given key and deletes the key:
 ```php
 echo $dot->pull('user.name');
 
-// Equivalent vanilla PHP < 7.0
-echo isset($array['user']['name']) ? $array['user']['name'] : null;
-unset($array['user']['name']);
-
-// Equivalent vanilla PHP >= 7.0
+// Equivalent vanilla PHP
 echo $array['user']['name'] ?? null;
 unset($array['user']['name']);
 ```
@@ -380,6 +374,9 @@ $dot->push('John');
 $array[] = 'John';
 ```
 
+If the given key already holds a non-array, non-null value, the value is not
+pushed and the Dot object is left unchanged.
+
 <a name="replace"></a>
 ### replace()
 
@@ -393,7 +390,7 @@ array_replace($originalArray, $array);
 
 Replaces the values with values having the same keys in the given array or Dot object with the given key:
 ```php
-$dot->merge('user', $array);
+$dot->replace('user', $array);
 
 // Equivalent vanilla PHP
 array_replace($originalArray['user'], $array);
@@ -418,7 +415,7 @@ Multiple key / value pairs:
 ```php
 $dot->set([
     'user.name' => 'John',
-    'page.title'     => 'Home'
+    'page.title' => 'Home'
 ]);
 ```
 
@@ -451,6 +448,15 @@ Returns all the stored items as JSON:
 echo $dot->toJson();
 ```
 
+You can also pass [JSON encoding options](https://www.php.net/manual/en/json.constants.php):
+```php
+// For a given key
+echo $dot->toJson('user', JSON_PRETTY_PRINT);
+
+// For all the stored items
+echo $dot->toJson(JSON_PRETTY_PRINT);
+```
+
 ## Contributing
 
 ### Pull Requests
@@ -470,7 +476,7 @@ All pull requests must be accompanied by passing unit tests and complete code co
 
 ### Static Analysis
 
-All pull requests must pass static analysis using [PHPStan](https://github.com/sebastianbergmann/phpunit/).
+All pull requests must pass static analysis using [PHPStan](https://github.com/phpstan/phpstan).
 
 ## License
 

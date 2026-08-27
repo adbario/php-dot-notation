@@ -9,6 +9,10 @@
     <!-- Rules -->
     <rule ref="PSR12"/>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="PHPCompatibility"/>
+
+    <!-- Check compatibility against the minimum supported PHP version -->
+    <config name="testVersion" value="7.4-"/>
 
     <!-- File extensions -->
     <arg name="extensions" value="php"/>

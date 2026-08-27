@@ -123,7 +123,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     /**
      * Delete the given key or keys
      *
-     * @param  array<TKey>|array<TKey, TValue>|int|string  $keys
+     * @param  array<TKey>|int|string  $keys
      * @return $this
      */
     public function delete($keys)
@@ -138,7 +138,7 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             }
 
             $items = &$this->items;
-            $segments = explode($this->delimiter, $key);
+            $segments = explode($this->delimiter, (string) $key);
             $lastSegment = array_pop($segments);
 
             foreach ($segments as $segment) {
@@ -385,9 +385,9 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
      * duplicate keys are not converted to arrays but rather overwrite the
      * value in the first array with the duplicate value in the second array.
      *
-     * @param  array<TKey, TValue>|array<TKey, array<TKey, TValue>>  $array1 Initial array to merge
-     * @param  array<TKey, TValue>|array<TKey, array<TKey, TValue>>  $array2 Array to recursively merge
-     * @return array<TKey, TValue>|array<TKey, array<TKey, TValue>>
+     * @param  array<TKey, TValue>  $array1 Initial array to merge
+     * @param  array<TKey, TValue>  $array2 Array to recursively merge
+     * @return array<TKey, TValue>
      */
     protected function arrayMergeRecursiveDistinct(array $array1, array $array2)
     {
@@ -401,6 +401,10 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             }
         }
 
+        // The recursive merge widens the inferred value type through the
+        // $merged reference; the values remain valid TValue at runtime, but
+        // PHPStan cannot prove this for an unconstrained template type.
+        // @phpstan-ignore return.type
         return $merged;
     }
 
@@ -430,6 +434,9 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     /**
      * Push a given value to the end of the array
      * in a given key
+     *
+     * If the given key already holds a non-array, non-null value,
+     * the value is not pushed and the Dot object is left unchanged.
      *
      * @param  mixed  $key
      * @param  mixed  $value
@@ -494,16 +501,22 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
             return $this;
         }
 
+        // Non-string keys (e.g. integers) can not contain the delimiter,
+        // so they are set directly to avoid overwriting the whole store.
+        if (!is_string($keys)) {
+            $this->items[$keys] = $value;
+
+            return $this;
+        }
+
         $items = &$this->items;
 
-        if (is_string($keys)) {
-            foreach (explode($this->delimiter, $keys) as $key) {
-                if (!isset($items[$key]) || !is_array($items[$key])) {
-                    $items[$key] = [];
-                }
-
-                $items = &$items[$key];
+        foreach (explode($this->delimiter, $keys) as $key) {
+            if (!isset($items[$key]) || !is_array($items[$key])) {
+                $items[$key] = [];
             }
+
+            $items = &$items[$key];
         }
 
         $items = $value;
@@ -633,12 +646,21 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     /**
      * Return the number of items in a given key
      *
+     * A non-countable value counts as one item and a
+     * missing key counts as zero items.
+     *
      * @param  int|string|null  $key
      * @return int
      */
     public function count($key = null): int
     {
-        return count($this->get($key));
+        $value = $this->get($key);
+
+        if (is_array($value) || $value instanceof Countable) {
+            return count($value);
+        }
+
+        return $value === null ? 0 : 1;
     }
 
     /*

@@ -1,5 +1,13 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
 parameters:
-    level: 6
+    level: 8
     paths:
         - src
         - tests
+    # The test suite intentionally asserts the runtime types of values that
+    # are already covered by the library's own generic PHPDoc annotations, so
+    # do not treat those PHPDoc types as certain during analysis.
+    treatPhpDocTypesAsCertain: false
