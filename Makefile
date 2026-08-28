@@ -1,16 +1,26 @@
+.PHONY: install test phpunit phpcs phpcbf phpstan coverage help
+
+PHP_BIN := vendor/bin
+
 install:
 	composer install
 
+test: phpunit phpcs phpstan
+
 phpunit:
-	./vendor/bin/phpunit
+	$(PHP_BIN)/phpunit
 
 phpcs:
-	./vendor/bin/phpcs
+	$(PHP_BIN)/phpcs
+
+phpcbf:
+	$(PHP_BIN)/phpcbf
 
 phpstan:
-	./vendor/bin/phpstan
+	$(PHP_BIN)/phpstan
 
-test:
-	make phpunit
-	make phpcs
-	make phpstan
+coverage:
+	$(PHP_BIN)/phpunit --coverage-html coverage
+
+help:
+	@echo "Targets: install, test, phpunit, phpcs, phpcbf, phpstan, coverage"

@@ -19,7 +19,7 @@ if (! function_exists('dot')) {
      * @param  non-empty-string  $delimiter
      * @return \Adbar\Dot<array-key, mixed>
      */
-    function dot($items, $parse = false, $delimiter = ".")
+    function dot($items = [], $parse = false, $delimiter = ".")
     {
         return new Dot($items, $parse, $delimiter);
     }
