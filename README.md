@@ -3,6 +3,7 @@
 <div align="center">
   <a href="https://github.com/adbario/php-dot-notation/actions/workflows/tests.yml?query=branch%3A3.x"><img src="https://img.shields.io/github/actions/workflow/status/adbario/php-dot-notation/tests.yml?branch=3.x&label=Tests&style=for-the-badge" alt="Tests Status"></a>
   <a href="https://coveralls.io/github/adbario/php-dot-notation?branch=3.x"><img src="https://img.shields.io/coveralls/github/adbario/php-dot-notation/3.x?style=for-the-badge" alt="Coverage Status"></a>
+  <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/badge/PHP-7.4%20--%208.5-777BB4?style=for-the-badge" alt="PHP 7.4 - 8.5"></a>
   <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/packagist/dt/adbario/php-dot-notation?style=for-the-badge" alt="Total Downloads"></a>
   <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/packagist/v/adbario/php-dot-notation?label=stable&style=for-the-badge" alt="Latest Stable Version"></a>
   <a href="LICENSE.md"><img src="https://img.shields.io/packagist/l/adbario/php-dot-notation?style=for-the-badge" alt="License"></a>
@@ -68,6 +69,7 @@ $dot = new \Adbar\Dot($array, false, "_");
 ```
 
 You can also use a helper function to create the object:
+
 ```php
 $dot = dot();
 
@@ -82,6 +84,7 @@ $dot = dot($array, true, "_");
 ```
 
 All methods not returning a specific value returns the Dot object for chaining:
+
 ```php
 $dot = dot();
 
@@ -115,9 +118,11 @@ Dot has the following methods:
 - [toJson()](#tojson)
 
 <a name="add"></a>
+
 ### add()
 
 Sets a given key / value pair if the key doesn't exist already:
+
 ```php
 $dot->add('user.name', 'John');
 
@@ -128,6 +133,7 @@ if (!isset($array['user']['name'])) {
 ```
 
 Multiple key / value pairs:
+
 ```php
 $dot->add([
     'user.name' => 'John',
@@ -136,17 +142,21 @@ $dot->add([
 ```
 
 <a name="all"></a>
+
 ### all()
 
 Returns all the stored items as an array:
+
 ```php
 $values = $dot->all();
 ```
 
 <a name="clear"></a>
+
 ### clear()
 
 Deletes the contents of a given key (sets an empty array):
+
 ```php
 $dot->clear('user.settings');
 
@@ -155,11 +165,13 @@ $array['user']['settings'] = [];
 ```
 
 Multiple keys:
+
 ```php
 $dot->clear(['user.settings', 'app.config']);
 ```
 
 All the stored items:
+
 ```php
 $dot->clear();
 
@@ -168,15 +180,18 @@ $array = [];
 ```
 
 <a name="count"></a>
+
 ### count()
 
 Returns the number of items in a given key. A non-countable value counts as
 one item and a missing key counts as zero items:
+
 ```php
 $dot->count('user.siblings');
 ```
 
 Items in the root of Dot object:
+
 ```php
 $dot->count();
 
@@ -185,9 +200,11 @@ count($dot);
 ```
 
 <a name="delete"></a>
+
 ### delete()
 
 Deletes the given key:
+
 ```php
 $dot->delete('user.name');
 
@@ -199,6 +216,7 @@ unset($array['user']['name']);
 ```
 
 Multiple keys:
+
 ```php
 $dot->delete([
     'user.name',
@@ -207,17 +225,21 @@ $dot->delete([
 ```
 
 <a name="flatten"></a>
+
 ### flatten()
 
 Returns a flattened array with the keys delimited by a given character (default "."):
+
 ```php
 $flatten = $dot->flatten();
 ```
 
 <a name="get"></a>
+
 ### get()
 
 Returns the value of a given key:
+
 ```php
 echo $dot->get('user.name');
 
@@ -229,14 +251,17 @@ echo $array['user']['name'] ?? null;
 ```
 
 Returns a given default value, if the given key doesn't exist:
+
 ```php
 echo $dot->get('user.name', 'some default value');
 ```
 
 <a name="has"></a>
+
 ### has()
 
 Checks if a given key exists (returns boolean true or false):
+
 ```php
 $dot->has('user.name');
 
@@ -245,6 +270,7 @@ isset($dot['user.name']);
 ```
 
 Multiple keys:
+
 ```php
 $dot->has([
     'user.name',
@@ -253,9 +279,11 @@ $dot->has([
 ```
 
 <a name="isempty"></a>
+
 ### isEmpty()
 
 Checks if a given key is empty (returns boolean true or false):
+
 ```php
 $dot->isEmpty('user.name');
 
@@ -267,6 +295,7 @@ empty($array['user']['name']);
 ```
 
 Multiple keys:
+
 ```php
 $dot->isEmpty([
     'user.name',
@@ -275,14 +304,17 @@ $dot->isEmpty([
 ```
 
 Checks the whole Dot object:
+
 ```php
 $dot->isEmpty();
 ```
 
 <a name="merge"></a>
+
 ### merge()
 
 Merges a given array or another Dot object:
+
 ```php
 $dot->merge($array);
 
@@ -291,6 +323,7 @@ array_merge($originalArray, $array);
 ```
 
 Merges a given array or another Dot object with the given key:
+
 ```php
 $dot->merge('user', $array);
 
@@ -299,9 +332,11 @@ array_merge($originalArray['user'], $array);
 ```
 
 <a name="mergerecursive"></a>
+
 ### mergeRecursive()
 
 Recursively merges a given array or another Dot object:
+
 ```php
 $dot->mergeRecursive($array);
 
@@ -310,6 +345,7 @@ array_merge_recursive($originalArray, $array);
 ```
 
 Recursively merges a given array or another Dot object with the given key:
+
 ```php
 $dot->mergeRecursive('user', $array);
 
@@ -318,25 +354,30 @@ array_merge_recursive($originalArray['user'], $array);
 ```
 
 <a name="mergerecursivedistinct"></a>
+
 ### mergeRecursiveDistinct()
 
 Recursively merges a given array or another Dot object. Duplicate keys overwrite the value in the
 original array (unlike [mergeRecursive()](#mergerecursive), where duplicate keys are transformed
 into arrays with multiple values):
+
 ```php
 $dot->mergeRecursiveDistinct($array);
 ```
 
 Recursively merges a given array or another Dot object with the given key. Duplicate keys overwrite the value in the
 original array.
+
 ```php
 $dot->mergeRecursiveDistinct('user', $array);
 ```
 
 <a name="pull"></a>
+
 ### pull()
 
 Returns the value of a given key and deletes the key:
+
 ```php
 echo $dot->pull('user.name');
 
@@ -346,19 +387,23 @@ unset($array['user']['name']);
 ```
 
 Returns a given default value, if the given key doesn't exist:
+
 ```php
 echo $dot->pull('user.name', 'some default value');
 ```
 
 Returns all the stored items as an array and clears the Dot object:
+
 ```php
 $items = $dot->pull();
 ```
 
 <a name="push"></a>
+
 ### push()
 
 Pushes a given value to the end of the array in a given key:
+
 ```php
 $dot->push('users', 'John');
 
@@ -367,6 +412,7 @@ $array['users'][] = 'John';
 ```
 
 Pushes a given value to the end of the array:
+
 ```php
 $dot->push('John');
 
@@ -378,9 +424,11 @@ If the given key already holds a non-array, non-null value, the value is not
 pushed and the Dot object is left unchanged.
 
 <a name="replace"></a>
+
 ### replace()
 
 Replaces the values with values having the same keys in the given array or Dot object:
+
 ```php
 $dot->replace($array);
 
@@ -389,18 +437,22 @@ array_replace($originalArray, $array);
 ```
 
 Replaces the values with values having the same keys in the given array or Dot object with the given key:
+
 ```php
 $dot->replace('user', $array);
 
 // Equivalent vanilla PHP
 array_replace($originalArray['user'], $array);
 ```
+
 `replace()` is not recursive.
 
 <a name="set"></a>
+
 ### set()
 
 Sets a given key / value pair:
+
 ```php
 $dot->set('user.name', 'John');
 
@@ -412,6 +464,7 @@ $array['user']['name'] = 'John';
 ```
 
 Multiple key / value pairs:
+
 ```php
 $dot->set([
     'user.name' => 'John',
@@ -420,35 +473,43 @@ $dot->set([
 ```
 
 <a name="setarray"></a>
+
 ### setArray()
 
 Replaces all items in Dot object with a given array:
+
 ```php
 $dot->setArray($array);
 ```
 
 <a name="setreference"></a>
+
 ### setReference()
 
 Replaces all items in Dot object with a given array as a reference and all future changes to Dot will be made directly to the original array:
+
 ```php
 $dot->setReference($array);
 ```
 
 <a name="tojson"></a>
+
 ### toJson()
 
 Returns the value of a given key as JSON:
+
 ```php
 echo $dot->toJson('user');
 ```
 
 Returns all the stored items as JSON:
+
 ```php
 echo $dot->toJson();
 ```
 
 You can also pass [JSON encoding options](https://www.php.net/manual/en/json.constants.php):
+
 ```php
 // For a given key
 echo $dot->toJson('user', JSON_PRETTY_PRINT);
@@ -460,9 +521,10 @@ echo $dot->toJson(JSON_PRETTY_PRINT);
 ## Contributing
 
 ### Pull Requests
- 1. Fork the Dot repository
- 2. Create a new branch for each feature or improvement
- 3. Send a pull request from each feature branch to the 3.x branch
+
+1.  Fork the Dot repository
+2.  Create a new branch for each feature or improvement
+3.  Send a pull request from each feature branch to the 3.x branch
 
 It is very important to separate new features or improvements into separate feature branches, and to send a pull request for each branch. This allows me to review and pull in new features or improvements individually.
 
