@@ -22,6 +22,7 @@ jobs:
     name: Test PHP ${{ matrix.php }}
     runs-on: ubuntu-26.04
     timeout-minutes: 15
+    continue-on-error: ${{ matrix.experimental == true }}
     # Run the test suite on every supported PHP version. One version
     # (analysis: true) additionally runs coding standards, static analysis
     # and coverage reporting; fail-fast is off so all versions report.
@@ -29,9 +30,13 @@ jobs:
       fail-fast: false
       matrix:
         php: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6"]
+        # Keep analysis on a stable PHP version and allow the newest version
+        # to fail while it is still experimental.
         include:
           - php: "8.5"
             analysis: true
+          - php: "8.6"
+            experimental: true
 
     steps:
       - name: Checkout
@@ -56,6 +61,7 @@ jobs:
         run: vendor/bin/phpstan
 
       - name: Tests
+        # The analysis job runs the coverage variant below instead.
         if: matrix.analysis != true
         run: vendor/bin/phpunit
 
@@ -68,3 +74,16 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           file: clover.xml
+
+  # Single summary check to mark as required in the branch rules, so the
+  # PHP matrix can change without updating repository settings. always()
+  # keeps it from being skipped (and treated as passing) when a test fails.
+  all-tests:
+    name: All tests passed
+    if: always()
+    needs: tests
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    steps:
+      - name: Check matrix result
+        run: test "${{ needs.tests.result }}" = "success"
