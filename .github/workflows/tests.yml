@@ -1,4 +1,4 @@
-name: tests
+name: CI
 
 # Run on pushes to the main branch and on all pull requests.
 on:
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   tests:
-    name: Test PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php }}${{ matrix.analysis && ' + analysis' || '' }}${{ matrix.experimental && ' (experimental)' || '' }}
     runs-on: ubuntu-26.04
     timeout-minutes: 15
     continue-on-error: ${{ matrix.experimental == true }}
