@@ -1,46 +1,30 @@
 ![PHP Dot Notation](https://user-images.githubusercontent.com/22136575/161442912-96d96b7b-9c99-4854-959c-86636093cea4.png)
 
 <div align="center">
-  <a href="https://github.com/adbario/php-dot-notation/actions/workflows/ci.yml?query=branch%3A3.x"><img src="https://img.shields.io/github/actions/workflow/status/adbario/php-dot-notation/ci.yml?branch=3.x&label=Tests&style=for-the-badge" alt="Tests Status"></a>
-  <a href="https://coveralls.io/github/adbario/php-dot-notation?branch=3.x"><img src="https://img.shields.io/coveralls/github/adbario/php-dot-notation/3.x?style=for-the-badge" alt="Coverage Status"></a>
-  <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/badge/PHP-7.4%20--%208.6-777BB4?style=for-the-badge" alt="PHP 7.4 - 8.6"></a>
-  <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/packagist/dt/adbario/php-dot-notation?style=for-the-badge" alt="Total Downloads"></a>
-  <a href="https://packagist.org/packages/adbario/php-dot-notation"><img src="https://img.shields.io/packagist/v/adbario/php-dot-notation?label=stable&style=for-the-badge" alt="Latest Stable Version"></a>
-  <a href="LICENSE.md"><img src="https://img.shields.io/packagist/l/adbario/php-dot-notation?style=for-the-badge" alt="License"></a>
+
+[![ci](https://img.shields.io/github/actions/workflow/status/adbario/php-dot-notation/ci.yml?label=ci&style=for-the-badge)](https://github.com/adbario/php-dot-notation/actions)
+[![Coverage](https://img.shields.io/coveralls/github/adbario/php-dot-notation/3.x?style=for-the-badge)](https://coveralls.io/github/adbario/php-dot-notation?branch=3.x)
+[![Stable](https://img.shields.io/packagist/v/adbario/php-dot-notation?label=stable&color=007ec6&style=for-the-badge)](https://packagist.org/packages/adbario/php-dot-notation)
+[![PHP](https://img.shields.io/badge/php-7.4_--_8.6-777bb4?style=for-the-badge)](https://packagist.org/packages/adbario/php-dot-notation)
+[![Downloads](https://img.shields.io/packagist/dt/adbario/php-dot-notation?color=007ec6&style=for-the-badge)](https://packagist.org/packages/adbario/php-dot-notation)
+[![License](https://img.shields.io/packagist/l/adbario/php-dot-notation?color=67ac09&style=for-the-badge)](LICENSE)[![PHPStan](https://img.shields.io/badge/phpstan-level_8-44bb00?style=for-the-badge)](https://github.com/adbario/php-dot-notation/actions/workflows/ci.yml)
+
 </div>
 
 ## About Dot
 
-Dot provides an easy access to arrays of data with dot notation in a lightweight and fast way. Inspired by Laravel Collection.
+Dot gives you easy access to nested PHP arrays using dot notation. Instead of chaining `$array['user']['address']['city']` and checking every level with `isset()`, you write `$dot->get('user.address.city')`.
 
-Dot implements PHP's ArrayAccess interface and Dot object can also be used the same way as normal arrays with additional dot notation.
-
-## Examples
-
-With Dot you can change this regular array syntax:
+It’s lightweight and inspired by Laravel’s collections. A Dot object also implements `ArrayAccess` and `Countable`, so you can keep using it like a normal array, with dot notation on top.
 
 ```php
-$array['info']['home']['address'] = 'Kings Square';
+$dot = dot(['user' => ['name' => 'Jane']]);
 
-echo $array['info']['home']['address'];
+$dot->get('user.name'); // 'Jane'
+$dot->set('user.address.city', 'Helsinki');
+$dot->has('user.address.city'); // true
 
-// Kings Square
-```
-
-to this (Dot object):
-
-```php
-$dot->set('info.home.address', 'Kings Square');
-
-echo $dot->get('info.home.address');
-```
-
-or even this (ArrayAccess):
-
-```php
-$dot['info.home.address'] = 'Kings Square';
-
-echo $dot['info.home.address'];
+$dot['user.email'] = 'jane@example.com'; // works like an array too
 ```
 
 ## Install
@@ -61,7 +45,7 @@ $dot = new \Adbar\Dot;
 // With existing array
 $dot = new \Adbar\Dot($array);
 
-// Or with auto parsing dot notation keys in existing array
+// Or with auto-parsing dot notation keys in an existing array
 $dot = new \Adbar\Dot($array, true);
 
 // You can also set a custom delimiter instead of the default dot (.)
@@ -76,14 +60,14 @@ $dot = dot();
 // With existing array
 $dot = dot($array);
 
-// Or with auto parsing dot notation keys in existing array
+// Or with auto-parsing dot notation keys in an existing array
 $dot = dot($array, true);
 
 // You can also set a custom delimiter instead of the default dot (.)
 $dot = dot($array, true, "_");
 ```
 
-All methods not returning a specific value returns the Dot object for chaining:
+All methods that do not return a specific value return the Dot object for chaining:
 
 ```php
 $dot = dot();
@@ -121,7 +105,7 @@ Dot has the following methods:
 
 ### add()
 
-Sets a given key / value pair if the key doesn't exist already:
+Sets a given key/value pair if the key doesn't exist already:
 
 ```php
 $dot->add('user.name', 'John');
@@ -132,7 +116,7 @@ if (!isset($array['user']['name'])) {
 }
 ```
 
-Multiple key / value pairs:
+Multiple key/value pairs:
 
 ```php
 $dot->add([
@@ -190,7 +174,7 @@ one item and a missing key counts as zero items:
 $dot->count('user.siblings');
 ```
 
-Items in the root of Dot object:
+Items in the root of the Dot object:
 
 ```php
 $dot->count();
@@ -250,7 +234,7 @@ echo $dot['user.name'];
 echo $array['user']['name'] ?? null;
 ```
 
-Returns a given default value, if the given key doesn't exist:
+Returns a given default value if the given key doesn't exist:
 
 ```php
 echo $dot->get('user.name', 'some default value');
@@ -386,7 +370,7 @@ echo $array['user']['name'] ?? null;
 unset($array['user']['name']);
 ```
 
-Returns a given default value, if the given key doesn't exist:
+Returns a given default value if the given key doesn't exist:
 
 ```php
 echo $dot->pull('user.name', 'some default value');
@@ -402,7 +386,7 @@ $items = $dot->pull();
 
 ### push()
 
-Pushes a given value to the end of the array in a given key:
+Pushes a given value to the end of the array at a given key:
 
 ```php
 $dot->push('users', 'John');
@@ -451,7 +435,7 @@ array_replace($originalArray['user'], $array);
 
 ### set()
 
-Sets a given key / value pair:
+Sets a given key/value pair:
 
 ```php
 $dot->set('user.name', 'John');
@@ -463,7 +447,7 @@ $dot['user.name'] = 'John';
 $array['user']['name'] = 'John';
 ```
 
-Multiple key / value pairs:
+Multiple key/value pairs:
 
 ```php
 $dot->set([
@@ -476,7 +460,7 @@ $dot->set([
 
 ### setArray()
 
-Replaces all items in Dot object with a given array:
+Replaces all items in the Dot object with a given array:
 
 ```php
 $dot->setArray($array);
@@ -486,7 +470,7 @@ $dot->setArray($array);
 
 ### setReference()
 
-Replaces all items in Dot object with a given array as a reference and all future changes to Dot will be made directly to the original array:
+Replaces all items in the Dot object with a given array by reference, and all future changes to Dot will be made directly to the original array:
 
 ```php
 $dot->setReference($array);
@@ -526,7 +510,7 @@ echo $dot->toJson(JSON_PRETTY_PRINT);
 2.  Create a new branch for each feature or improvement
 3.  Send a pull request from each feature branch to the 3.x branch
 
-It is very important to separate new features or improvements into separate feature branches, and to send a pull request for each branch. This allows me to review and pull in new features or improvements individually.
+Keep new features and improvements in separate feature branches, and submit a pull request for each branch. This lets us review and merge new features or improvements individually.
 
 ### Style Guide
 
