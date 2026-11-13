@@ -1,25 +1,42 @@
-name: tests
+name: CI
 
-on: [push, pull_request]
+# Run on pushes to the main branch and on all pull requests.
+on:
+  push:
+    branches: ["3.x"]
+  pull_request:
 
+# Restrict the GITHUB_TOKEN to read-only repository access.
 permissions:
   contents: read
+  pull-requests: read
 
+# Cancel superseded runs when a pull request is updated, but let
+# pushed-branch runs finish so 3.x always has a complete result.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   tests:
-    name: Test PHP ${{ matrix.php }}
-    runs-on: ubuntu-latest
+    name: PHP ${{ matrix.php }}${{ matrix.analysis && ' + analysis' || '' }}${{ matrix.experimental && ' (experimental)' || '' }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    continue-on-error: ${{ matrix.experimental == true }}
+    # Run the test suite on every supported PHP version. One version
+    # (analysis: true) additionally runs coding standards, static analysis
+    # and coverage reporting; fail-fast is off so all versions report.
     strategy:
       fail-fast: false
       matrix:
         php: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6"]
+        # Keep analysis on a stable PHP version and allow the newest version
+        # to fail while it is still experimental.
         include:
           - php: "8.5"
             analysis: true
+          - php: "8.6"
+            experimental: true
 
     steps:
       - name: Checkout
@@ -29,12 +46,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          # Xdebug is only needed for coverage on the analysis job.
           coverage: ${{ matrix.analysis && 'xdebug' || 'none' }}
 
       - name: Install dependencies with Composer
         uses: ramsey/composer-install@v4
-        with:
-          composer-options: --optimize-autoloader
 
       - name: Coding standards
         if: matrix.analysis
@@ -45,7 +61,8 @@ jobs:
         run: vendor/bin/phpstan
 
       - name: Tests
-        if: ${{ !matrix.analysis }}
+        # The analysis job runs the coverage variant below instead.
+        if: matrix.analysis != true
         run: vendor/bin/phpunit
 
       - name: Tests with coverage
@@ -56,5 +73,17 @@ jobs:
         if: matrix.analysis
         uses: coverallsapp/github-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: clover.xml
+
+  # Single summary check to mark as required in the branch rules, so the
+  # PHP matrix can change without updating repository settings. always()
+  # keeps it from being skipped (and treated as passing) when a test fails.
+  all-tests:
+    name: All tests passed
+    if: always()
+    needs: tests
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    steps:
+      - name: Check matrix result
+        run: test "${{ needs.tests.result }}" = "success"
