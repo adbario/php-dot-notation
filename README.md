@@ -5,6 +5,8 @@
 
 <div align="center">
 
+<br>
+
 [![ci](https://img.shields.io/github/actions/workflow/status/adbario/php-dot-notation/ci.yml?label=ci&style=for-the-badge)](https://github.com/adbario/php-dot-notation/actions)
 [![Coverage](https://img.shields.io/coveralls/github/adbario/php-dot-notation/3.x?style=for-the-badge)](https://coveralls.io/github/adbario/php-dot-notation?branch=3.x)
 [![Stable](https://img.shields.io/packagist/v/adbario/php-dot-notation?label=stable&color=007ec6&style=for-the-badge)](https://packagist.org/packages/adbario/php-dot-notation)
