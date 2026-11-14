@@ -1,4 +1,7 @@
-![PHP Dot Notation](https://user-images.githubusercontent.com/22136575/161442912-96d96b7b-9c99-4854-959c-86636093cea4.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="art/header-dark.png">
+  <img alt="PHP Dot Notation" src="art/header-light.png">
+</picture>
 
 <div align="center">
 
